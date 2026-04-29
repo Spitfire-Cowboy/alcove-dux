@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+
 language: en-US
 tone_instructions: "Be concise, evidence-focused, and privacy-aware. Prioritize correctness, security, test coverage, and local-first data handling."
 
@@ -13,11 +15,10 @@ reviews:
     - "!reports/**"
     - "!dist/**"
     - "!build/**"
-
-path_instructions:
-  - path: "src/alcove_dux/**"
-    instructions: "Focus on privacy boundaries, report-safe IDs, deterministic behavior, and benchmarkable evidence quality."
-  - path: "docs/**"
-    instructions: "Flag any private paths, private infrastructure names, raw document text, or unsupported misconduct-decision language."
-  - path: "tests/**"
-    instructions: "Prefer focused tests that cover privacy, offsets, calibration, and false-positive behavior."
+  path_instructions:
+    - path: "src/alcove_dux/**"
+      instructions: "Focus on privacy boundaries, report-safe IDs, deterministic behavior, and benchmarkable evidence quality."
+    - path: "docs/**"
+      instructions: "Flag any private paths, private infrastructure names, raw document text, or unsupported misconduct-decision language."
+    - path: "tests/**"
+      instructions: "Prefer focused tests that cover privacy, offsets, calibration, and false-positive behavior."
