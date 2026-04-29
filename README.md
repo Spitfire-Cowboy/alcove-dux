@@ -16,6 +16,7 @@ Alcove Dux is a review aid, not an automated misconduct decision system. It help
 
 ## ⚡ Start Here
 
+- [Live Demo](https://spitfire-cowboy.github.io/alcove-dux/): try a browser-only sample scan.
 - [Quick Start](docs/quickstart.md): install locally and run a sample scan.
 - [Demo Walkthrough](docs/demo.md): run the sample demo and inspect the generated report.
 - [CLI Usage](docs/cli.md): command reference for pairwise scans, corpus scans, semantic matching, and calibration.
