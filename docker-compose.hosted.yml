@@ -1,0 +1,30 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-alcove_dux}
+      POSTGRES_USER: ${POSTGRES_USER:-alcove_dux}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me-for-local-dev}
+    ports:
+      - "5432:5432"
+    volumes:
+      - alcove_dux-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U alcove_dux -d alcove_dux"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  chroma:
+    image: chromadb/chroma:latest
+    environment:
+      IS_PERSISTENT: "TRUE"
+      ANONYMIZED_TELEMETRY: "FALSE"
+    ports:
+      - "${CHROMA_PORT:-8001}:8000"
+    volumes:
+      - alcove_dux-chroma:/chroma/chroma
+
+volumes:
+  alcove_dux-postgres:
+  alcove_dux-chroma:

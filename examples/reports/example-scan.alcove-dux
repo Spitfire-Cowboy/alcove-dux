@@ -1,0 +1,63 @@
+{
+  "catalog_schema_version": 1,
+  "generated_at": "2026-04-29T12:41:58.254867+00:00",
+  "matches": [
+    {
+      "explanation": "Exact shared token sequence of 9 tokens.",
+      "kind": "exact_token_sequence",
+      "score": 1.0,
+      "source_chunk_id": "source:exact:0",
+      "source_end": 50,
+      "source_start": 0,
+      "suspicious_chunk_id": "submitted:exact:0",
+      "suspicious_end": 96,
+      "suspicious_start": 46
+    },
+    {
+      "explanation": "Normalized text spans are exact or near-exact matches.",
+      "kind": "exact_overlap",
+      "score": 1.0,
+      "source_chunk_id": "source:0",
+      "source_end": 51,
+      "source_start": 0,
+      "suspicious_chunk_id": "submitted:1",
+      "suspicious_end": 97,
+      "suspicious_start": 46
+    }
+  ],
+  "runtime_config": {
+    "baseline_lexical_threshold": 0.5,
+    "calibration_profile_id": null,
+    "catalog_schema_version": 1,
+    "embedding_model_id": "baai_bge_small_en_v1_5",
+    "enabled_dataset_ids": [
+      "pan_pc_11",
+      "pan_2014_text_alignment",
+      "plagbench",
+      "paws_wiki",
+      "sts_benchmark",
+      "mrpc"
+    ],
+    "language": null,
+    "long_context_embedding_model_id": "nomic_embed_text_v1_5",
+    "multilingual_embedding_model_id": "sentence_transformers_paraphrase_multilingual_minilm_l12_v2",
+    "reranker_model_id": "cross_encoder_ms_marco_minilm_l6_v2",
+    "schema_version": 1,
+    "semantic_similarity_threshold": 0.72,
+    "semantic_top_k": 5
+  },
+  "scan_id": "401808ca-8aa2-4509-ba32-208b03201fee",
+  "schema_version": 1,
+  "selected_embedding_model_id": "baai_bge_small_en_v1_5",
+  "selected_reranker_model_id": "cross_encoder_ms_marco_minilm_l6_v2",
+  "source_document_id": "source",
+  "source_document_sha256": "2298cea345cc99ac8d3703854a7b575e1db326db02f57fb2ed825f9625b2bac8",
+  "source_documents": [
+    {
+      "id": "source",
+      "sha256": "2298cea345cc99ac8d3703854a7b575e1db326db02f57fb2ed825f9625b2bac8"
+    }
+  ],
+  "suspicious_document_id": "submitted",
+  "suspicious_document_sha256": "1c50b047870df96e3d64087e6bf6e901eb7060bb439efe23d7ae82070e466dbf"
+}

@@ -1,0 +1,566 @@
+{
+  "schema_version": 1,
+  "updated": "2026-04-28",
+  "model_defaults": {
+    "embedding_model": "baai_bge_small_en_v1_5",
+    "long_context_embedding_model": "nomic_embed_text_v1_5",
+    "reranker_model": "cross_encoder_ms_marco_minilm_l6_v2",
+    "threshold_policy": "calibrate_per_dataset",
+    "baseline_lexical_threshold": "0.50",
+    "multilingual_embedding_model": "sentence_transformers_paraphrase_multilingual_minilm_l12_v2"
+  },
+  "models": [
+    {
+      "id": "baai_bge_small_en_v1_5",
+      "provider": "huggingface",
+      "model_id": "BAAI/bge-small-en-v1.5",
+      "kind": "embedding",
+      "license": "MIT",
+      "source_url": "https://huggingface.co/BAAI/bge-small-en-v1.5",
+      "paper_url": "https://arxiv.org/abs/2309.07597",
+      "languages": [
+        "en"
+      ],
+      "dimensions": 384,
+      "max_sequence_length": 512,
+      "recommended_for": [
+        "default_semantic_similarity",
+        "fast_local_retrieval",
+        "threshold_calibration"
+      ],
+      "notes": "Similarity thresholds must be calibrated on Alcove Dux datasets.",
+      "enabled_by_default": true
+    },
+    {
+      "id": "sentence_transformers_all_minilm_l6_v2",
+      "provider": "huggingface",
+      "model_id": "sentence-transformers/all-MiniLM-L6-v2",
+      "kind": "embedding",
+      "license": "Apache-2.0",
+      "source_url": "https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2",
+      "languages": [
+        "en"
+      ],
+      "dimensions": 384,
+      "max_sequence_length": 256,
+      "recommended_for": [
+        "lightweight_baseline",
+        "ci_smoke_tests",
+        "semantic_similarity_baseline"
+      ],
+      "enabled_by_default": false
+    },
+    {
+      "id": "nomic_embed_text_v1_5",
+      "provider": "huggingface",
+      "model_id": "nomic-ai/nomic-embed-text-v1.5",
+      "ollama_model": "nomic-embed-text",
+      "kind": "embedding",
+      "license": "Apache-2.0",
+      "source_url": "https://huggingface.co/nomic-ai/nomic-embed-text-v1.5",
+      "paper_url": "https://arxiv.org/abs/2402.01613",
+      "languages": [
+        "en"
+      ],
+      "dimensions": 768,
+      "max_sequence_length": 8192,
+      "recommended_for": [
+        "long_context_chunks",
+        "local_embedding_backend",
+        "document_level_similarity"
+      ],
+      "prompt_prefixes": {
+        "document": "search_document: ",
+        "query": "search_query: ",
+        "clustering": "clustering: ",
+        "classification": "classification: "
+      },
+      "enabled_by_default": true
+    },
+    {
+      "id": "jina_embeddings_v2_base_en",
+      "provider": "huggingface",
+      "model_id": "jinaai/jina-embeddings-v2-base-en",
+      "kind": "embedding",
+      "license": "Apache-2.0",
+      "source_url": "https://huggingface.co/jinaai/jina-embeddings-v2-base-en",
+      "paper_url": "https://arxiv.org/abs/2310.19923",
+      "languages": [
+        "en"
+      ],
+      "dimensions": 768,
+      "max_sequence_length": 8192,
+      "recommended_for": [
+        "long_document_retrieval",
+        "semantic_textual_similarity",
+        "document_level_similarity"
+      ],
+      "enabled_by_default": false
+    },
+    {
+      "id": "sentence_transformers_paraphrase_multilingual_minilm_l12_v2",
+      "provider": "huggingface",
+      "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+      "kind": "embedding",
+      "license": "Apache-2.0",
+      "source_url": "https://huggingface.co/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+      "languages": [
+        "multilingual"
+      ],
+      "dimensions": 384,
+      "max_sequence_length": 128,
+      "recommended_for": [
+        "multilingual_similarity_baseline",
+        "cross_lingual_paraphrase_candidates",
+        "non_english_smoke_tests"
+      ],
+      "notes": "Calibrate thresholds per language and task before reviewer warnings.",
+      "enabled_by_default": false
+    },
+    {
+      "id": "intfloat_multilingual_e5_small",
+      "provider": "huggingface",
+      "model_id": "intfloat/multilingual-e5-small",
+      "kind": "embedding",
+      "license": "MIT",
+      "source_url": "https://huggingface.co/intfloat/multilingual-e5-small",
+      "languages": [
+        "multilingual"
+      ],
+      "dimensions": 384,
+      "max_sequence_length": 512,
+      "recommended_for": [
+        "multilingual_retrieval",
+        "cross_lingual_source_search",
+        "local_embedding_backend"
+      ],
+      "prompt_prefixes": {
+        "document": "passage: ",
+        "query": "query: "
+      },
+      "notes": "Use E5 query/passage prefixes and calibrate by language.",
+      "enabled_by_default": false
+    },
+    {
+      "id": "cross_encoder_ms_marco_minilm_l6_v2",
+      "provider": "huggingface",
+      "model_id": "cross-encoder/ms-marco-MiniLM-L6-v2",
+      "kind": "reranker",
+      "license": "Apache-2.0",
+      "source_url": "https://huggingface.co/cross-encoder/ms-marco-MiniLM-L6-v2",
+      "languages": [
+        "en"
+      ],
+      "max_sequence_length": 512,
+      "recommended_for": [
+        "reranking_top_candidates",
+        "reducing_false_positives",
+        "evidence_confidence_scoring"
+      ],
+      "enabled_by_default": true
+    }
+  ],
+  "dataset_defaults": {
+    "primary_plagiarism_corpus": "pan_pc_11",
+    "primary_alignment_task": "pan_2014_text_alignment",
+    "primary_llm_plagiarism": "plagbench",
+    "primary_paraphrase_adversarial": "paws_wiki",
+    "primary_sts": "sts_benchmark",
+    "primary_paraphrase_sanity": "mrpc",
+    "primary_multilingual_paraphrase": "paws_x",
+    "primary_cross_lingual_similarity": "semeval_2017_sts"
+  },
+  "datasets": [
+    {
+      "id": "pan_pc_11",
+      "name": "PAN Plagiarism Corpus 2011",
+      "kind": "plagiarism_corpus",
+      "license": "CC-BY-4.0",
+      "source_url": "https://zenodo.org/records/3250095",
+      "doi": "10.5281/zenodo.3250095",
+      "languages": [
+        "en"
+      ],
+      "recommended_for": [
+        "plagiarism_detection_evaluation",
+        "exact_match_evaluation",
+        "obfuscated_reuse_evaluation"
+      ],
+      "metrics": [
+        "precision",
+        "recall",
+        "granularity",
+        "plagdet"
+      ],
+      "acquisition": "manual_download",
+      "enabled_by_default": true
+    },
+    {
+      "id": "pan_2014_text_alignment",
+      "name": "PAN 2014 Text Alignment",
+      "kind": "text_alignment_task",
+      "license": "research_dataset_terms",
+      "source_url": "https://zenodo.org/records/3716022",
+      "task_url": "https://pan.webis.de/clef14/pan14-web/text-alignment.html",
+      "languages": [
+        "en"
+      ],
+      "recommended_for": [
+        "passage_alignment",
+        "offset_level_detection",
+        "plagdet_metric_compatibility"
+      ],
+      "metrics": [
+        "macro_precision",
+        "macro_recall",
+        "granularity",
+        "plagdet"
+      ],
+      "acquisition": "manual_download",
+      "enabled_by_default": true
+    },
+    {
+      "id": "plagbench",
+      "name": "PlagBench",
+      "kind": "llm_plagiarism_benchmark",
+      "license": "dataset_specific",
+      "source_url": "https://arxiv.org/abs/2406.16288",
+      "repository_url": "https://github.com/Brit7777/plagbench",
+      "data_url": "https://raw.githubusercontent.com/Brit7777/plagbench/main/plagbench_evaluation_set.csv",
+      "languages": [
+        "en"
+      ],
+      "recommended_for": [
+        "llm_paraphrase_evaluation",
+        "summarization_reuse_evaluation",
+        "synthetic_benchmarking"
+      ],
+      "metrics": [
+        "accuracy",
+        "precision",
+        "recall",
+        "f1"
+      ],
+      "acquisition": "follow_paper_artifacts",
+      "enabled_by_default": true
+    },
+    {
+      "id": "paws_wiki",
+      "name": "PAWS Wiki",
+      "kind": "paraphrase_identification",
+      "license": "dataset_specific",
+      "source_url": "https://arxiv.org/abs/1904.01130",
+      "languages": [
+        "en"
+      ],
+      "recommended_for": [
+        "high_overlap_false_positive_tests",
+        "paraphrase_candidate_evaluation",
+        "threshold_calibration"
+      ],
+      "metrics": [
+        "accuracy",
+        "precision",
+        "recall",
+        "f1"
+      ],
+      "acquisition": "datasets_library",
+      "enabled_by_default": true
+    },
+    {
+      "id": "paws_x",
+      "name": "PAWS-X",
+      "kind": "multilingual_paraphrase_identification",
+      "license": "dataset_specific",
+      "source_url": "https://github.com/google-research-datasets/paws",
+      "paper_url": "https://aclanthology.org/D19-1382/",
+      "languages": [
+        "en",
+        "de",
+        "es",
+        "fr",
+        "ja",
+        "ko",
+        "zh"
+      ],
+      "recommended_for": [
+        "multilingual_false_positive_tests",
+        "multilingual_paraphrase_candidate_evaluation",
+        "per_language_threshold_calibration"
+      ],
+      "metrics": [
+        "accuracy",
+        "precision",
+        "recall",
+        "f1"
+      ],
+      "acquisition": "datasets_library_or_manual_download",
+      "notes": "License and upstream source terms must be verified before CI download.",
+      "enabled_by_default": false
+    },
+    {
+      "id": "semeval_2017_sts",
+      "name": "SemEval 2017 STS Multilingual and Cross-lingual",
+      "kind": "multilingual_semantic_textual_similarity",
+      "license": "research_dataset_terms",
+      "source_url": "https://alt.qcri.org/semeval2017/task1/index.php?id=data-and-tools",
+      "paper_url": "https://arxiv.org/abs/1708.00055",
+      "languages": [
+        "ar",
+        "en",
+        "es",
+        "tr"
+      ],
+      "recommended_for": [
+        "multilingual_similarity_calibration",
+        "cross_lingual_similarity_calibration",
+        "semantic_threshold_regression"
+      ],
+      "metrics": [
+        "pearson",
+        "spearman",
+        "mse"
+      ],
+      "acquisition": "manual_download",
+      "notes": "Confirm task data terms before redistributing or CI download.",
+      "enabled_by_default": false
+    },
+    {
+      "id": "pan_2011_clitr",
+      "name": "PAN at FIRE 2011 Cross-Language Indian Text Reuse",
+      "kind": "cross_lingual_text_reuse",
+      "license": "research_dataset_terms",
+      "source_url": "https://pan.webis.de/fire11/pan11-web/",
+      "languages": [
+        "en",
+        "hi"
+      ],
+      "recommended_for": [
+        "cross_lingual_document_reuse_detection",
+        "multilingual_retrieval_evaluation",
+        "hosted_corpus_future_work"
+      ],
+      "metrics": [
+        "precision",
+        "recall",
+        "f1"
+      ],
+      "acquisition": "archived_manual_download",
+      "notes": "Document-level English-Hindi text reuse task; verify archival data terms.",
+      "enabled_by_default": false
+    },
+    {
+      "id": "bucc_bitext_mining",
+      "name": "BUCC Bitext Mining",
+      "kind": "cross_lingual_sentence_retrieval",
+      "license": "unknown",
+      "source_url": "https://huggingface.co/datasets/mteb/bucc-bitext-mining",
+      "languages": [
+        "de",
+        "en",
+        "fr",
+        "ru",
+        "zh"
+      ],
+      "recommended_for": [
+        "cross_lingual_retrieval_smoke_tests",
+        "multilingual_embedding_model_comparison",
+        "source_search_threshold_calibration"
+      ],
+      "metrics": [
+        "precision_at_k",
+        "recall_at_k",
+        "f1"
+      ],
+      "acquisition": "huggingface_datasets",
+      "notes": "Hugging Face dataset card lists license as unknown; do not enable by default.",
+      "enabled_by_default": false
+    },
+    {
+      "id": "sts_benchmark",
+      "name": "STS Benchmark / SemEval STS",
+      "kind": "semantic_textual_similarity",
+      "license": "dataset_specific",
+      "source_url": "https://arxiv.org/abs/1708.00055",
+      "languages": [
+        "en"
+      ],
+      "recommended_for": [
+        "cosine_similarity_calibration",
+        "embedding_model_comparison",
+        "semantic_similarity_regression"
+      ],
+      "metrics": [
+        "pearson",
+        "spearman",
+        "mse"
+      ],
+      "acquisition": "datasets_library",
+      "enabled_by_default": true
+    },
+    {
+      "id": "mrpc",
+      "name": "Microsoft Research Paraphrase Corpus",
+      "kind": "paraphrase_identification",
+      "license": "dataset_specific",
+      "source_url": "https://www.tensorflow.org/datasets/catalog/glue#gluemrpc",
+      "languages": [
+        "en"
+      ],
+      "recommended_for": [
+        "paraphrase_sanity_checks",
+        "classifier_threshold_calibration",
+        "small_ci_evaluation"
+      ],
+      "metrics": [
+        "accuracy",
+        "f1"
+      ],
+      "acquisition": "tensorflow_datasets_or_datasets_library",
+      "enabled_by_default": true
+    },
+    {
+      "id": "pes2o",
+      "name": "peS2o",
+      "kind": "academic_full_text_corpus",
+      "license": "ODC-BY",
+      "source_url": "https://huggingface.co/datasets/allenai/peS2o",
+      "repository_url": "https://github.com/allenai/peS2o",
+      "languages": [
+        "en"
+      ],
+      "recommended_for": [
+        "academic_source_corpus_experiments",
+        "large_scale_retrieval",
+        "future_hosted_corpus"
+      ],
+      "metrics": [
+        "retrieval_precision_at_k",
+        "retrieval_recall_at_k"
+      ],
+      "acquisition": "huggingface_datasets",
+      "enabled_by_default": false
+    },
+    {
+      "id": "pan_2025_generated_plagiarism",
+      "name": "PAN 2025 Generated Plagiarism Detection",
+      "kind": "generated_plagiarism_corpus",
+      "license": "research_dataset_terms",
+      "source_url": "https://pan.webis.de/clef25/pan25-web/generated-plagiarism-detection.html",
+      "repository_url": "https://github.com/pan-webis-de/pan-code/tree/master/clef25/generated-plagiarism-detection",
+      "languages": [
+        "en"
+      ],
+      "recommended_for": [
+        "llm_generated_plagiarism_detection",
+        "pan_style_span_scoring",
+        "robustness_evaluation"
+      ],
+      "metrics": [
+        "micro_plagdet",
+        "macro_plagdet",
+        "precision",
+        "recall",
+        "granularity"
+      ],
+      "acquisition": "restricted_research_access",
+      "enabled_by_default": false
+    },
+    {
+      "id": "machine_paraphrase_dataset",
+      "name": "Machine Paraphrase Dataset",
+      "kind": "machine_paraphrase_detection",
+      "license": "license_requires_verification",
+      "source_url": "https://huggingface.co/datasets/jpwahle/machine-paraphrase-dataset",
+      "paper_url": "https://arxiv.org/abs/2103.11909",
+      "languages": [
+        "en"
+      ],
+      "recommended_for": [
+        "machine_paraphrase_evaluation",
+        "paragraph_classification",
+        "detector_robustness"
+      ],
+      "metrics": [
+        "accuracy",
+        "precision",
+        "recall",
+        "f1"
+      ],
+      "acquisition": "huggingface_datasets",
+      "enabled_by_default": false
+    },
+    {
+      "id": "autoregressive_paraphrase_dataset",
+      "name": "Autoregressive Paraphrase Dataset",
+      "kind": "llm_paraphrase_detection",
+      "license": "CC-BY-4.0",
+      "source_url": "https://huggingface.co/datasets/jpwahle/autoregressive-paraphrase-dataset",
+      "repository_url": "https://github.com/jpwahle/emnlp22-transforming",
+      "paper_url": "https://arxiv.org/abs/2210.03568",
+      "languages": [
+        "en"
+      ],
+      "recommended_for": [
+        "llm_paraphrase_evaluation",
+        "paragraph_classification",
+        "detector_robustness"
+      ],
+      "metrics": [
+        "accuracy",
+        "precision",
+        "recall",
+        "f1"
+      ],
+      "acquisition": "huggingface_datasets",
+      "enabled_by_default": false
+    },
+    {
+      "id": "p4p",
+      "name": "P4P Paraphrase Plagiarism Corpus",
+      "kind": "paraphrase_plagiarism_pairs",
+      "license": "license_requires_verification",
+      "source_url": "https://clic.ub.edu/corpus/en/parafrasi-en",
+      "download_url": "https://clic.ub.edu/corpus/en/paraphrases-download-en",
+      "languages": [
+        "en"
+      ],
+      "recommended_for": [
+        "paraphrase_plagiarism_evaluation",
+        "pair_classification",
+        "semantic_similarity_calibration"
+      ],
+      "metrics": [
+        "accuracy",
+        "precision",
+        "recall",
+        "f1"
+      ],
+      "acquisition": "manual_download",
+      "enabled_by_default": false
+    },
+    {
+      "id": "p4pin",
+      "name": "P4PIN Paraphrase Plagiarism Identification",
+      "kind": "paraphrase_plagiarism_pairs",
+      "license": "license_requires_verification",
+      "source_url": "https://arxiv.org/abs/1805.11611",
+      "languages": [
+        "en"
+      ],
+      "recommended_for": [
+        "paraphrase_plagiarism_evaluation",
+        "pair_classification",
+        "semantic_similarity_calibration"
+      ],
+      "metrics": [
+        "accuracy",
+        "precision",
+        "recall",
+        "f1"
+      ],
+      "acquisition": "manual_artifact_verification",
+      "enabled_by_default": false
+    }
+  ]
+}

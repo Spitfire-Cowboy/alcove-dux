@@ -1,0 +1,5 @@
+Introductory text before the reused passage.
+
+Alpha beta gamma delta epsilon zeta eta theta iota.
+
+Closing text after the reused passage.

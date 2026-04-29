@@ -1,0 +1,13 @@
+services:
+  alcove_dux:
+    build: .
+    ports:
+      - "${ALCOVE_DUX_API_PORT:-8000}:8000"
+    environment:
+      ALCOVE_DUX_DB_PATH: /app/state/alcove_dux.sqlite
+    volumes:
+      - ./reports:/app/reports
+      - alcove_dux-state:/app/state
+
+volumes:
+  alcove_dux-state:

@@ -1,0 +1,26 @@
+.DS_Store
+.env
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+coverage.xml
+htmlcov/
+dist/
+build/
+
+# Local corpora, scan outputs, model caches, and vector indexes can contain
+# private documents. Keep them out of source control by default.
+data/
+reports/
+!examples/reports/
+!examples/reports/**
+models/
+vectorstores/
+*.sqlite
+*.sqlite3
+*.db

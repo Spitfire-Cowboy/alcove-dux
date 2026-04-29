@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://spitfire-cowboy.github.io/alcove-dux/schemas/alcove-dux-report.schema.json",
+  "title": "Alcove Dux Scan Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "scan_id",
+    "suspicious_document_id",
+    "source_document_id",
+    "generated_at",
+    "matches"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "scan_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "suspicious_document_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_document_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "suspicious_document_sha256": {
+      "type": ["string", "null"],
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "source_document_sha256": {
+      "type": ["string", "null"],
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "catalog_schema_version": {
+      "type": ["integer", "null"]
+    },
+    "selected_embedding_model_id": {
+      "type": ["string", "null"]
+    },
+    "selected_reranker_model_id": {
+      "type": ["string", "null"]
+    },
+    "runtime_config": {
+      "type": ["object", "null"],
+      "additionalProperties": true
+    },
+    "matches": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/match"
+      }
+    },
+    "source_documents": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/document"
+      },
+      "default": []
+    }
+  },
+  "$defs": {
+    "document": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "match": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "suspicious_chunk_id",
+        "source_chunk_id",
+        "score",
+        "suspicious_start",
+        "suspicious_end",
+        "source_start",
+        "source_end",
+        "explanation"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "minLength": 1
+        },
+        "suspicious_chunk_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_chunk_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "suspicious_start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "suspicious_end": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "source_start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "source_end": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "explanation": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

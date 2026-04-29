@@ -1,0 +1,27 @@
+- name: mvp
+  color: "0B57D0"
+  description: Work required for the first usable local MVP
+- name: research
+  color: "5319E7"
+  description: Literature, benchmark, and model investigation
+- name: backend
+  color: "1D76DB"
+  description: API, storage, matching, and service work
+- name: frontend
+  color: "FBCA04"
+  description: Web UI and report viewer work
+- name: infra
+  color: "C5DEF5"
+  description: CI, packaging, Docker, and deployment
+- name: dataset
+  color: "006B75"
+  description: Dataset loaders, licenses, downloads, and evaluation artifacts
+- name: model
+  color: "D93F0B"
+  description: Embedding, reranker, and calibration work
+- name: security
+  color: "B60205"
+  description: Privacy, PII, dependency, and threat-modeling work
+- name: alcove-plugin
+  color: "7057FF"
+  description: Alcove extraction and local review integration

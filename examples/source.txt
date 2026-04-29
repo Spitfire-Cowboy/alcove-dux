@@ -1,0 +1,3 @@
+Alpha beta gamma delta epsilon zeta eta theta iota.
+
+This source document is intentionally tiny. It exists only to demonstrate Alcove Dux's local scan flow.
