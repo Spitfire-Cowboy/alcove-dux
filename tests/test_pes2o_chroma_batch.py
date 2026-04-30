@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 import sys
+import types
 from argparse import Namespace
 from collections import Counter
 from pathlib import Path
@@ -32,6 +34,13 @@ def batch_args(**overrides):
         "max_upsert_seconds": None,
         "min_passages_per_second": None,
         "total_shards": 20,
+        "gpu_max_temp_c": 82.0,
+        "no_gpu_temp_check": False,
+        "out_root": Path("reports/live-fire"),
+        "index_root": Path("vectorstores"),
+        "hf_cache": None,
+        "fresh": False,
+        "plan_only": False,
     }
     defaults.update(overrides)
     return Namespace(**defaults)
@@ -134,3 +143,88 @@ def test_prepare_embedding_texts_adds_e5_prefixes_only_for_e5_models():
         ["hello"],
         role="query",
     ) == ["query: hello"]
+    assert module.prepare_embedding_texts(
+        "intfloat/e5-base-v2",
+        ["hello"],
+        role="passage",
+    ) == ["passage: hello"]
+
+
+def test_temperature_pause_after_exhaustion_preserves_resume_cursor(
+    monkeypatch,
+    tmp_path,
+):
+    module = load_batch_module()
+
+    class FakeModel:
+        def __init__(self, *args, **kwargs):
+            pass
+
+        def encode(self, texts, **kwargs):
+            return [[0.1] for _ in texts]
+
+    class FakeCollection:
+        name = "pes2o_train_bge_small"
+
+        def count(self):
+            return 0
+
+        def upsert(self, **kwargs):
+            raise AssertionError("temperature pause should happen before upsert")
+
+    class FakeClient:
+        def list_collections(self):
+            return []
+
+        def get_or_create_collection(self, **kwargs):
+            return FakeCollection()
+
+    class ExhaustedScanner:
+        def __init__(self, *, start, total_shards, cache_dir):
+            self.position = start
+            self.lines_scanned = 0
+            self.short_passages_skipped = 0
+            self.exhausted = False
+
+        def __iter__(self):
+            self.lines_scanned = 1
+            yield module.Passage(
+                id="pes2o-train-00000-000000000",
+                text=" ".join(f"word{i}" for i in range(100)),
+                source="unit",
+                shard=0,
+                line=0,
+                next_position=module.ScanPosition(shard=0, line=1),
+            )
+            self.exhausted = True
+            self.position = module.ScanPosition(shard=1, line=0)
+
+    monkeypatch.setitem(
+        sys.modules,
+        "sentence_transformers",
+        types.SimpleNamespace(SentenceTransformer=FakeModel),
+    )
+    monkeypatch.setitem(
+        sys.modules,
+        "chromadb",
+        types.SimpleNamespace(PersistentClient=lambda **kwargs: FakeClient()),
+    )
+    monkeypatch.setattr(module, "Pes2oScanner", ExhaustedScanner)
+    temps = iter([40.0, 90.0])
+    monkeypatch.setattr(module, "current_gpu_temp_c", lambda: next(temps))
+
+    args = batch_args(
+        out_root=tmp_path / "reports",
+        index_root=tmp_path / "index",
+        batch_passages=10,
+        flush_size=10,
+        total_shards=1,
+    )
+
+    assert module.run(args) == 0
+
+    latest = json.loads((tmp_path / "reports" / "unit-run" / "latest.json").read_text())
+    assert latest["status"] == "temperature_pause"
+    assert latest["next_shard"] == 0
+    assert latest["next_line"] == 0
+    assert latest["indexed_this_run"] == 0

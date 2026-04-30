@@ -345,10 +345,10 @@ def run(args: argparse.Namespace) -> int:
             stop_note = "Time budget reached after the latest successful flush."
             break
 
-    if pending and status != "temperature_pause":
-        flush_pending()
+    if pending and status != "temperature_pause" and not flush_pending():
+        stop_note = "GPU temperature limit reached before the next flush."
 
-    if scanner.exhausted:
+    if scanner.exhausted and status != "temperature_pause":
         status = "dataset_exhausted"
         last_flush_position = scanner.position
     shard_counts[active_collection_name] = int(collection.count())
@@ -731,7 +731,7 @@ def words(text: str) -> list[str]:
 
 
 def prepare_embedding_texts(model_id: str, texts: list[str], *, role: str) -> list[str]:
-    if "multilingual-e5" not in model_id:
+    if re.search(r"(^|/)(?:multilingual-)?e5", model_id, flags=re.IGNORECASE) is None:
         return texts
     prefix = "query: " if role == "query" else "passage: "
     return [f"{prefix}{text}" for text in texts]
