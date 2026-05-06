@@ -1,5 +1,6 @@
 """Optional FastAPI app for local Alcove Dux scans."""
 
+import logging
 import os
 import tempfile
 from pathlib import Path
@@ -12,6 +13,10 @@ from alcove_dux.documents import Document, load_document_file
 from alcove_dux.matching import compare_texts
 from alcove_dux.reports import ReportDocument, ScanReport
 from alcove_dux.storage import AlcoveDuxStore
+
+logger = logging.getLogger(__name__)
+SAFE_UPLOAD_ERROR_PREFIXES = ("Unsupported document type:",)
+GENERIC_UPLOAD_ERROR_MESSAGE = "Unable to process uploaded document."
 
 
 def create_app(database_path: str | Path | None = None):
@@ -86,10 +91,11 @@ def create_app(database_path: str | Path | None = None):
         try:
             document = await _document_from_upload(file, document_id=document_id or None)
         except (RuntimeError, ValueError) as error:
+            message = _handle_upload_error(error, filename=file.filename)
             return _dashboard_html(
                 store.list_documents(),
                 store.list_scans(),
-                message=str(error),
+                message=message,
             )
         metadata = dict(document.metadata)
         if title:
@@ -159,7 +165,10 @@ def create_app(database_path: str | Path | None = None):
         try:
             document = await _document_from_upload(file, document_id=document_id or None)
         except (RuntimeError, ValueError) as error:
-            raise HTTPException(status_code=400, detail=str(error)) from error
+            raise HTTPException(
+                status_code=400,
+                detail=_handle_upload_error(error, filename=file.filename),
+            ) from error
         if title:
             document = Document(
                 id=document.id,
@@ -566,6 +575,15 @@ async def _document_from_upload(file: Any, *, document_id: str | None) -> Docume
     finally:
         if temporary_path is not None:
             temporary_path.unlink(missing_ok=True)
+
+
+def _handle_upload_error(error: RuntimeError | ValueError, *, filename: str | None) -> str:
+    message = str(error)
+    if message.startswith(SAFE_UPLOAD_ERROR_PREFIXES):
+        logger.info("Rejected uploaded document", extra={"upload_name": filename or ""})
+        return message
+    logger.exception("Failed to process uploaded document", extra={"upload_name": filename or ""})
+    return GENERIC_UPLOAD_ERROR_MESSAGE
 
 
 def _document_row(document: dict) -> str:
