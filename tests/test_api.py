@@ -1,5 +1,6 @@
 import pytest
 
+import alcove_dux.api as api_module
 from alcove_dux.api import _dashboard_html, create_app
 
 
@@ -92,6 +93,26 @@ def test_api_file_upload_rejects_unsupported_type(tmp_path):
     assert uploaded.json()["detail"] == "Unsupported document type: .csv"
 
 
+def test_api_file_upload_hides_parser_errors(tmp_path, monkeypatch):
+    fastapi_testclient = pytest.importorskip("fastapi.testclient")
+    client = fastapi_testclient.TestClient(create_app(tmp_path / "reject-runtime.sqlite"))
+
+    async def fail_upload(*_args, **_kwargs):
+        raise RuntimeError("private parser path: /tmp/secret.txt")
+
+    monkeypatch.setattr(api_module, "_document_from_upload", fail_upload)
+
+    uploaded = client.post(
+        "/documents/file",
+        data={"document_id": "upload"},
+        files={"file": ("upload.txt", b"alpha", "text/plain")},
+    )
+
+    assert uploaded.status_code == 400
+    assert uploaded.json()["detail"] == api_module.GENERIC_UPLOAD_ERROR_MESSAGE
+    assert "secret.txt" not in uploaded.text
+
+
 def test_dashboard_routes_do_not_expose_raw_text(tmp_path):
     fastapi_testclient = pytest.importorskip("fastapi.testclient")
     client = fastapi_testclient.TestClient(create_app(tmp_path / "dashboard.sqlite"))
@@ -142,6 +163,26 @@ def test_dashboard_file_upload_error_stays_on_dashboard(tmp_path):
     assert uploaded.status_code == 200
     assert "Unsupported document type: .csv" in uploaded.text
     assert "not,a,supported,document" not in uploaded.text
+
+
+def test_dashboard_file_upload_hides_parser_errors(tmp_path, monkeypatch):
+    fastapi_testclient = pytest.importorskip("fastapi.testclient")
+    client = fastapi_testclient.TestClient(create_app(tmp_path / "dashboard-runtime.sqlite"))
+
+    async def fail_upload(*_args, **_kwargs):
+        raise RuntimeError("private parser path: /tmp/secret.txt")
+
+    monkeypatch.setattr(api_module, "_document_from_upload", fail_upload)
+
+    uploaded = client.post(
+        "/ui/documents/file",
+        data={"document_id": "upload"},
+        files={"file": ("upload.txt", b"alpha", "text/plain")},
+    )
+
+    assert uploaded.status_code == 200
+    assert api_module.GENERIC_UPLOAD_ERROR_MESSAGE in uploaded.text
+    assert "secret.txt" not in uploaded.text
 
 
 def test_dashboard_html_has_screen_reader_landmarks_and_labels():

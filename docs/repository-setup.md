@@ -28,6 +28,21 @@ stable release points after package and PyPI setup.
 - OpenSSF Scorecard: enabled for `develop` and scheduled runs.
 - Dependabot: configured for GitHub Actions and Python package updates.
 
+## Scorecard Follow-Up
+
+Some current Scorecard findings require maintainer or repository-governance follow-through rather
+than code-only changes:
+
+- `MaintainedID`: cannot clear until the repository is older than 90 days.
+- `CodeReviewID`: depends on reviewed pull request history accumulating over time.
+- `CIIBestPracticesID`: requires pursuing the OpenSSF Best Practices badge externally.
+- `FuzzingID`: requires adding a real fuzzing target and automation; this is feature work, not a
+  workflow-only fix.
+- `SecurityPolicyID`: keep `SECURITY.md` linked to GitHub private reporting and verify GitHub shows
+  the repository policy at `Security -> Policy`.
+- `PinnedDependenciesID`: Scorecard will continue to flag `pip install` commands in workflows and
+  the Dockerfile until the project adopts a reproducible lockfile or hashed-install strategy.
+
 ## PyPI
 
 Recommended publishing gate: review the package metadata, release workflow, and

@@ -4,7 +4,12 @@ Alcove Dux is local-first and may process sensitive documents. Please report vul
 
 ## Reporting
 
-Open a private vulnerability report through GitHub Security Advisories when available, or contact the maintainers through the repository owner.
+Open a private vulnerability report through GitHub Security Advisories:
+
+- <https://github.com/Spitfire-Cowboy/alcove-dux/security/advisories/new>
+- <https://github.com/Spitfire-Cowboy/alcove-dux/security/policy>
+
+If GitHub private reporting is unavailable, contact the maintainers through the repository owner.
 
 Please include:
 
