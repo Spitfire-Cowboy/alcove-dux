@@ -5,17 +5,17 @@ Thanks for helping build Alcove Dux. The project is local-first, evidence-first,
 ## Local Setup
 
 ```bash
-python -m pip install -e ".[dev,api]"
-python -m pytest -q
-python -m ruff check .
+uv sync --locked --extra dev --extra api
+uv run python -m pytest -q
+uv run python -m ruff check .
 ```
 
 Optional extras:
 
 ```bash
-python -m pip install -e ".[semantic]"  # embedding similarity
-python -m pip install -e ".[documents]" # PDF and DOCX ingestion
-python -m pip install -e ".[eval]"      # benchmark loaders
+uv sync --locked --extra semantic   # embedding similarity
+uv sync --locked --extra documents  # PDF and DOCX ingestion
+uv sync --locked --extra eval       # benchmark loaders
 ```
 
 ## Privacy Rules
@@ -32,10 +32,10 @@ python -m pip install -e ".[eval]"      # benchmark loaders
 Run these before proposing changes:
 
 ```bash
-python -m pytest -q
-python -m ruff check .
-python -m build
-python -m twine check dist/*
+uv run python -m pytest -q
+uv run python -m ruff check .
+uv run python -m build
+uv run python -m twine check dist/*
 docker compose config >/dev/null
 ```
 
@@ -52,3 +52,4 @@ The repository includes:
 - OpenSSF Scorecard
 - Dependabot for GitHub Actions and Python dependency updates
 - CodeRabbit review guidance
+- `uv.lock` for reproducible workflow and container installs

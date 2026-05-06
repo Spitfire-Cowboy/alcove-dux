@@ -27,6 +27,7 @@ stable release points after package and PyPI setup.
   Security are available for the repository.
 - OpenSSF Scorecard: enabled for `develop` and scheduled runs.
 - Dependabot: configured for GitHub Actions and Python package updates.
+- `uv.lock`: checked in for reproducible workflow and container dependency resolution.
 
 ## Scorecard Follow-Up
 
@@ -40,8 +41,6 @@ than code-only changes:
   workflow-only fix.
 - `SecurityPolicyID`: keep `SECURITY.md` linked to GitHub private reporting and verify GitHub shows
   the repository policy at `Security -> Policy`.
-- `PinnedDependenciesID`: Scorecard will continue to flag `pip install` commands in workflows and
-  the Dockerfile until the project adopts a reproducible lockfile or hashed-install strategy.
 
 ## PyPI
 
