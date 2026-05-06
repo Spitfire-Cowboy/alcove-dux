@@ -15,8 +15,8 @@ from alcove_dux.reports import ReportDocument, ScanReport
 from alcove_dux.storage import AlcoveDuxStore
 
 logger = logging.getLogger(__name__)
-SAFE_UPLOAD_ERROR_PREFIXES = ("Unsupported document type:",)
 GENERIC_UPLOAD_ERROR_MESSAGE = "Unable to process uploaded document."
+SUPPORTED_UPLOAD_SUFFIXES = frozenset({".txt", ".md", ".markdown", ".pdf", ".docx"})
 
 
 def create_app(database_path: str | Path | None = None):
@@ -88,6 +88,13 @@ def create_app(database_path: str | Path | None = None):
         document_id: str = Form(default=""),
         title: str = Form(default=""),
     ) -> str:
+        safe_error = _unsupported_upload_message(file.filename)
+        if safe_error is not None:
+            return _dashboard_html(
+                store.list_documents(),
+                store.list_scans(),
+                message=safe_error,
+            )
         try:
             document = await _document_from_upload(file, document_id=document_id or None)
         except (RuntimeError, ValueError) as error:
@@ -162,6 +169,9 @@ def create_app(database_path: str | Path | None = None):
         document_id: str = Form(default=""),
         title: str = Form(default=""),
     ) -> dict:
+        safe_error = _unsupported_upload_message(file.filename)
+        if safe_error is not None:
+            raise HTTPException(status_code=400, detail=safe_error)
         try:
             document = await _document_from_upload(file, document_id=document_id or None)
         except (RuntimeError, ValueError) as error:
@@ -561,10 +571,11 @@ def _scan_review_html(store: AlcoveDuxStore, scan_id: str) -> str:
 
 async def _document_from_upload(file: Any, *, document_id: str | None) -> Document:
     filename = file.filename or "upload.txt"
-    suffix = Path(filename).suffix
-    if suffix.casefold() not in {".txt", ".md", ".markdown", ".pdf", ".docx"}:
-        raise ValueError(f"Unsupported document type: {suffix or 'none'}")
+    safe_error = _unsupported_upload_message(filename)
+    if safe_error is not None:
+        raise ValueError(safe_error)
     content = await file.read()
+    suffix = Path(filename).suffix
     temporary_path: Path | None = None
     try:
         with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as temporary:
@@ -578,12 +589,15 @@ async def _document_from_upload(file: Any, *, document_id: str | None) -> Docume
 
 
 def _handle_upload_error(error: RuntimeError | ValueError, *, filename: str | None) -> str:
-    message = str(error)
-    if message.startswith(SAFE_UPLOAD_ERROR_PREFIXES):
-        logger.info("Rejected uploaded document", extra={"upload_name": filename or ""})
-        return message
     logger.exception("Failed to process uploaded document", extra={"upload_name": filename or ""})
     return GENERIC_UPLOAD_ERROR_MESSAGE
+
+
+def _unsupported_upload_message(filename: str | None) -> str | None:
+    suffix = Path(filename or "upload.txt").suffix.casefold()
+    if suffix in SUPPORTED_UPLOAD_SUFFIXES:
+        return None
+    return f"Unsupported document type: {suffix or 'none'}"
 
 
 def _document_row(document: dict) -> str:
