@@ -110,6 +110,26 @@ Reports are designed to record enough context for another reviewer to understand
 - [x] Support threshold calibration by language and task type.
 - [x] Include a public-safe demo corpus for local testing.
 
+## Current Milestones
+
+### Milestone 1: Security baseline on `develop`
+
+- [ ] Merge the dependency and workflow hardening PRs into `develop`.
+- [ ] Close the remaining Dependabot alerts on the default branch.
+- [x] Keep code scanning at zero open alerts after workflow cleanup.
+
+### Milestone 2: Release candidate to `main`
+
+- [ ] Open a `develop` → `main` release PR.
+- [ ] Summarize the release candidate scope in `CHANGELOG.md`.
+- [ ] Confirm version metadata and release workflow readiness for the next cut.
+
+### Milestone 3: Cut the next release
+
+- [ ] Merge the release PR into `main`.
+- [ ] Create the GitHub release from `main`.
+- [ ] Verify the build and optional PyPI publish jobs complete successfully.
+
 ## Near-Term Priorities
 
 - [ ] Improve benchmark documentation with clearer caveats, dataset licenses, and sample size notes.
@@ -117,7 +137,7 @@ Reports are designed to record enough context for another reviewer to understand
 - [ ] Expand accessibility testing for dashboard and HTML reports.
 - [ ] Add more public-safe examples that show exact match, near duplicate, paraphrase, and no-match cases.
 - [ ] Document threshold profiles by task, language, and review context.
-- [ ] Prepare PyPI release metadata and trusted-publishing instructions.
+- [ ] Prepare the `develop` → `main` release PR once security changes land on `develop`.
 
 ## Future Work
 
