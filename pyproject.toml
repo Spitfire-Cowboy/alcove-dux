@@ -51,7 +51,7 @@ vector-zvec = [
   "zvec>=0.2"
 ]
 documents = [
-  "pypdf>=4.0",
+  "pypdf>=6.10.2",
   "python-docx>=1.1"
 ]
 yaml = [
@@ -67,10 +67,10 @@ api = [
   "uvicorn[standard]>=0.30"
 ]
 alcove = [
-  "alcove-search>=0.3"
+  "alcove-search>=0.4"
 ]
 all = [
-  "alcove-dux[semantic,vector-chroma,documents,yaml,eval,api,alcove]"
+  "alcove-dux[semantic,vector-chroma,documents,yaml,eval,api]"
 ]
 
 [project.scripts]
@@ -89,6 +89,18 @@ packages = ["src/alcove_dux"]
 testpaths = ["tests"]
 pythonpath = ["src"]
 addopts = "--cov=alcove_dux --cov-report=term-missing --cov-report=xml"
+
+[tool.uv]
+conflicts = [
+  [
+    { extra = "alcove" },
+    { extra = "documents" },
+  ],
+  [
+    { extra = "alcove" },
+    { extra = "all" },
+  ],
+]
 
 [tool.ruff]
 line-length = 100
