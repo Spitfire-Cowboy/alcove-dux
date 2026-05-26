@@ -2,7 +2,7 @@
 
 This demo shows the simplest Alcove Dux loop: scan a short submitted passage against a known source, generate evidence, and inspect two report views.
 
-## Run The Demo
+## Run the demo
 
 ```bash
 python scripts/demo.py
@@ -16,7 +16,7 @@ The script writes demo outputs to `reports/demo/`:
 
 The `reports/` folder is reserved for local outputs.
 
-## What The Demo Shows
+## What the demo shows
 
 1. Alcove Dux loads two local files from `examples/demo/`.
 2. The CLI compares a submitted passage to a known source.
@@ -24,7 +24,7 @@ The `reports/` folder is reserved for local outputs.
 4. The public HTML report summarizes evidence without raw matched text.
 5. The local review HTML shows highlighted snippets for human inspection.
 
-## Talk Track
+## Talk track
 
 For a live walkthrough, say:
 

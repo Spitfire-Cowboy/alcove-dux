@@ -1,6 +1,6 @@
 # Multilingual Detection
 
-Alcove Dux can scan Unicode text in any language at the lexical layer, but high-quality plagiarism detection outside English requires language-specific calibration.
+Alcove Dux can scan Unicode text in any language at the lexical layer, but high-quality similarity review outside English requires language-specific calibration.
 
 ## Current Support
 
@@ -64,5 +64,5 @@ python scripts/calibrate_threshold.py \
 
 ## Known Gaps
 
-- Cross-lingual plagiarism review uses multilingual embeddings and reranking rather than English lexical thresholds.
+- Cross-lingual similarity review uses multilingual embeddings and reranking rather than English lexical thresholds.
 - Public multilingual plagiarism benchmarks need license review before inclusion in default CI.
