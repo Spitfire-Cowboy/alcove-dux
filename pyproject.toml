@@ -67,7 +67,7 @@ api = [
   "uvicorn[standard]>=0.30"
 ]
 alcove = [
-  "alcove-search>=0.3"
+  "alcove-search>=0.4"
 ]
 all = [
   "alcove-dux[semantic,vector-chroma,documents,yaml,eval,api]"
