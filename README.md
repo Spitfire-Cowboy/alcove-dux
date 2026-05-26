@@ -1,7 +1,7 @@
 <h1 align="center">Alcove Dux</h1>
 
 <p align="center">
-  <strong>Private, local-first similarity evidence for educators, editors, and researchers.</strong>
+  <strong>Local-first similarity evidence for teachers and academic reviewers — you decide what it means.</strong>
 </p>
 
 <p align="center">
@@ -13,13 +13,14 @@
 
 ![Alcove Dux review screenshot](docs/assets/hero.png)
 
-Alcove Dux is an open-source, local-first toolkit for educators, editors, researchers, and small institutions that need transparent similarity review without sending private documents to a closed service.
+Alcove Dux is an open-source, local-first toolkit for K-12 teachers, instructors, academic reviewers, and small institutions that need transparent similarity review without sending student documents to a closed service.
 
-Alcove Dux is a review aid, not a verdict machine. It helps reviewers inspect similarity evidence on their own hardware, and unlike cloud services that retain submitted documents and return a verdict, Alcove Dux runs locally and shows you the evidence.
+Alcove Dux is a review aid, not a verdict machine. It helps teachers and reviewers inspect similarity evidence on their own hardware, and unlike Turnitin and similar cloud services, Alcove Dux never uploads student documents to a third-party server. Similarity evidence stays on your device and is reviewed by you, not scored by an algorithm and stored by a vendor.
 
 ## ⚡ Start Here
 
 - [Quick Start](docs/quickstart.md): install locally and run a sample scan.
+- [Institutional Deployment](docs/deployment.md): run Alcove Dux on a shared departmental or school server.
 - [Demo Walkthrough](docs/demo.md): run the sample demo and inspect the generated report.
 - [CLI Usage](docs/cli.md): command reference for pairwise scans, corpus scans, semantic matching, and calibration.
 - [Reports](docs/reports.md): JSON, public HTML, local review HTML, and report privacy behavior.
@@ -29,11 +30,20 @@ Alcove Dux is a review aid, not a verdict machine. It helps reviewers inspect si
 
 An instructor uploads two documents, runs a scan, and gets a side-by-side highlighted report — locally, without sending text to any server.
 
+No command line is required for the main workflow: open the local dashboard in your browser, upload documents, and review the results there.
+
+- Local FastAPI dashboard for document upload, scan creation, and side-by-side review.
 - Text, Markdown, PDF, and DOCX ingestion.
 - Exact, fuzzy, semantic, and reranked similarity evidence.
 - Pairwise scans and local-corpus scans from the CLI.
-- Local FastAPI dashboard for document upload, scan creation, and side-by-side review.
 - Screen-reader-friendly dashboard and HTML reports with privacy-preserving exports.
+
+## 👩‍🏫 Who This Is For
+
+- Classroom teachers reviewing student submissions.
+- Instructors comparing assignments against known sources.
+- Department or institution-level academic integrity reviewers.
+- Small schools and colleges that want local control instead of cloud document retention.
 
 ## 📚 Documentation
 

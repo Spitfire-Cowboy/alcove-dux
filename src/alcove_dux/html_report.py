@@ -27,7 +27,7 @@ def render_report_html(report: dict[str, Any]) -> str:
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Alcove Dux Scan Report</title>
+  <title>Alcove Dux Text Similarity Report</title>
   <style>
     :root {{
       color-scheme: light;
@@ -205,8 +205,8 @@ def render_report_html(report: dict[str, Any]) -> str:
     <p class="eyebrow">Alcove Dux evidence report</p>
     <h1>Scan {escape(str(report.get("scan_id", "unknown")))}</h1>
     <p class="note">
-      This report shows similarity evidence and offsets. It does not include private
-      document text or local file paths.
+      This report shows similarity evidence only. It does not determine intent,
+      policy, or outcome. It also does not include private document text or local file paths.
     </p>
 
     <dl class="summary" aria-label="Scan summary">
@@ -301,7 +301,7 @@ def render_local_review_html(
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Alcove Dux Local Review</title>
+  <title>Alcove Dux Local Similarity Review</title>
   <style>
     :root {{
       --ink: #202124;
@@ -398,8 +398,13 @@ def render_local_review_html(
   <main id="main-content" tabindex="-1">
     <h1>Local Review</h1>
     <p class="note">
-      This local-only report includes source text snippets for human review. Use the
-      standard HTML export when sharing evidence outside this machine.
+      This report shows similarity evidence only. It does not determine intent,
+      policy, or outcome. This local-only report includes source text snippets for
+      human review. Use the standard HTML export when sharing evidence outside this machine.
+    </p>
+    <p class="note">
+      What to do next: use the highlighted passages as a starting point for human review
+      and conversation, not as a conclusion on their own.
     </p>
     {evidence_rows}
   </main>

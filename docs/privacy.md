@@ -2,6 +2,26 @@
 
 Alcove Dux is local-first. Private documents, extracted text, generated reports, vector indexes, and model caches stay on the user's device unless the user deliberately exports them.
 
+For schools and universities, that means student work can stay under institutional control instead of being uploaded to a third-party similarity service.
+
+## Student work and FERPA
+
+Alcove Dux processes student submissions locally. During a scan, student work does not need to be transmitted to Anthropic, GitHub, or another third party.
+
+For US institutions, this supports FERPA-aligned deployment because student records remain under institutional control rather than entering a vendor-managed comparison database.
+
+## GDPR and local processing
+
+For EU and UK institutions, local-first processing means student data does not need to cross jurisdictional boundaries or enter third-party infrastructure during routine scanning. The institution controls the data at rest and in transit.
+
+## For IT administrators
+
+- No external API calls are required during scans.
+- No student data is intentionally sent to telemetry services during scans.
+- Scan state is stored locally by the deployment.
+- Report export is opt-in.
+- Unlike cloud-based similarity services, Alcove Dux does not retain copies of submitted documents, does not build a comparison database from student submissions, and does not share data with external services by default.
+
 ## Recommended Public Report Contents
 
 When a report needs to travel outside a trusted review context, keep it focused on stable evidence artifacts rather than raw source material.

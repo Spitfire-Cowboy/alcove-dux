@@ -1,8 +1,10 @@
 # Quick Start
 
-This path installs Alcove Dux locally and runs a pairwise scan with the bundled examples.
+This path installs Alcove Dux locally and opens the browser-based dashboard first, then shows the CLI workflow for scripting and automation.
 
 ## Install
+
+You'll need Python 3.11 or later. If you're not sure whether it is already installed, ask your IT department or start with [python.org](https://www.python.org/).
 
 ```bash
 python -m pip install ".[api]"
@@ -14,7 +16,29 @@ Check that the CLI is available:
 alcove-dux catalog
 ```
 
-## Run a pairwise scan
+## Dashboard quick start
+
+Start the local dashboard:
+
+```bash
+uvicorn "alcove_dux.api:create_app" --factory --reload
+```
+
+Open `http://localhost:8000` in your browser, upload the documents you want to review, and run a scan there.
+
+This is the recommended path for teachers and reviewers who do not want to work in the terminal after installation.
+
+## Docker quick start
+
+If you have Docker available, you can also run the local dashboard with:
+
+```bash
+docker compose up --build
+```
+
+Then open `http://localhost:8000`.
+
+## CLI pairwise scan
 
 ```bash
 alcove-dux scan \
@@ -62,6 +86,10 @@ alcove-dux scan-corpus \
 ```
 
 First use with `--semantic` downloads roughly 130 MB of model data, so allow a minute or two on a cold cache.
+
+## Shared or institutional setup
+
+If you are supporting a department, school, or campus installation, see [Deployment Notes](deployment.md) for the shared-server and Docker Compose path.
 
 ## Local API
 
