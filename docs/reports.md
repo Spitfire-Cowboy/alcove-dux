@@ -19,6 +19,14 @@ The public schema lives at [`schemas/alcove-dux-report.schema.json`](../schemas/
 
 Minimal example:
 
+> **Note**: This example is illustrative and intentionally omits required
+> fields. A complete payload also includes top-level fields such as
+> `schema_version`, `generated_at`, and `source_documents`, plus per-match
+> fields such as `suspicious_start`, `suspicious_end`, `source_start`,
+> `source_end`, chunk IDs, and `explanation`. See
+> [`schemas/alcove-dux-report.schema.json`](../schemas/alcove-dux-report.schema.json)
+> for the full required structure.
+
 ```json
 {
   "scan_id": "scan-123",

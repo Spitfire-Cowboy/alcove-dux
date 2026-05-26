@@ -25,6 +25,6 @@ This checklist keeps the public package identity, privacy boundary, and release 
    python -m twine check dist/*
    ```
 5. Confirm the CLI, docs, and Alcove plugin entry points still use `alcove-dux` or `alcove_dux` as appropriate.
-6. Push the release commit to `main`.
+6. Open a release PR and merge it into `main` after review and passing CI.
 7. Create a GitHub Release targeting `main`. Publishing the GitHub Release triggers `.github/workflows/release.yml`.
 8. Confirm the release workflow builds successfully and, when appropriate, publishes to PyPI through the trusted publisher.
