@@ -91,7 +91,8 @@ def render_report_html(report: dict[str, Any]) -> str:
       line-height: 1.15;
     }}
     h2 {{
-      font-size: 1rem;
+      font-size: 1.15rem;
+      font-weight: 700;
       margin-bottom: 12px;
     }}
     .eyebrow {{
@@ -302,12 +303,19 @@ def render_local_review_html(
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Alcove Dux Local Review</title>
   <style>
+    :root {{
+      --ink: #202124;
+      --muted: #5f6368;
+      --line: #dadce0;
+      --panel: #f8fafd;
+      --accent: #0b57d0;
+    }}
     * {{ box-sizing: border-box; }}
     body {{
       margin: 0;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system,
         BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: #202124;
+      color: var(--ink);
       background: #fff;
       line-height: 1.55;
     }}
@@ -317,16 +325,16 @@ def render_local_review_html(
       padding: 32px 0 48px;
     }}
     h1 {{ margin: 0; font-size: 2rem; letter-spacing: 0; }}
-    h2 {{ margin: 0 0 12px; font-size: 1rem; letter-spacing: 0; }}
-    .note {{ max-width: 780px; color: #5f6368; }}
+    h2 {{ margin: 0 0 12px; font-size: 1.15rem; font-weight: 700; letter-spacing: 0; }}
+    .note {{ max-width: 780px; color: var(--muted); }}
     .skip-link {{
       position: absolute;
       left: 12px;
       top: -48px;
       z-index: 10;
       background: #fff;
-      color: #0b57d0;
-      border: 2px solid #0b57d0;
+      color: var(--accent);
+      border: 2px solid var(--accent);
       border-radius: 6px;
       padding: 8px 10px;
     }}
@@ -343,7 +351,7 @@ def render_local_review_html(
       border: 0;
     }}
     section {{
-      border-top: 1px solid #dadce0;
+      border-top: 1px solid var(--line);
       padding-top: 18px;
       margin-top: 24px;
     }}
@@ -353,16 +361,16 @@ def render_local_review_html(
       gap: 14px;
     }}
     .pane {{
-      border: 1px solid #dadce0;
+      border: 1px solid var(--line);
       border-radius: 8px;
       padding: 14px;
       min-height: 160px;
-      background: #f8fafd;
+      background: var(--panel);
       overflow-wrap: anywhere;
       white-space: pre-wrap;
     }}
     .meta {{
-      color: #5f6368;
+      color: var(--muted);
       font-size: 0.86rem;
       margin: 0 0 10px;
     }}

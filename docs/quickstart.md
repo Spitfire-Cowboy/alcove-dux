@@ -5,7 +5,7 @@ This path installs Alcove Dux locally and runs a pairwise scan with the bundled 
 ## Install
 
 ```bash
-python -m pip install -e ".[dev,api]"
+python -m pip install ".[api]"
 ```
 
 Check that the CLI is available:
@@ -14,7 +14,7 @@ Check that the CLI is available:
 alcove-dux catalog
 ```
 
-## Run A Pairwise Scan
+## Run a pairwise scan
 
 ```bash
 alcove-dux scan \
@@ -31,9 +31,11 @@ Outputs:
 - `reports/scan.html`: public-safe HTML summary without raw matched text.
 - `reports/scan-review.html`: local review page with matched text snippets.
 
+Open `reports/scan-review.html` in any browser to inspect matched passages. The `.alcove-dux` file is plain JSON and can be inspected in any text editor.
+
 Keep generated reports under `reports/` unless they are deliberately prepared for sharing.
 
-## Run A Corpus Scan
+## Run a corpus scan
 
 ```bash
 alcove-dux scan-corpus \
@@ -44,12 +46,14 @@ alcove-dux scan-corpus \
   --review-html reports/corpus-review.html
 ```
 
-## Optional Semantic Matching
+Open `reports/corpus-review.html` in any browser to inspect the matched passages. Use `reports/corpus-scan.alcove-dux` when you want the full machine-readable evidence record.
+
+## Optional semantic matching
 
 Semantic matching downloads and runs an embedding model, so it is opt-in:
 
 ```bash
-python -m pip install -e ".[semantic]"
+python -m pip install ".[semantic]"
 alcove-dux scan-corpus \
   examples/submitted.txt \
   examples/corpus \
@@ -57,10 +61,12 @@ alcove-dux scan-corpus \
   --semantic
 ```
 
+First use with `--semantic` downloads roughly 130 MB of model data, so allow a minute or two on a cold cache.
+
 ## Local API
 
 ```bash
-python -m pip install -e ".[api]"
+python -m pip install ".[api]"
 uvicorn "alcove_dux.api:create_app" --factory --reload
 ```
 

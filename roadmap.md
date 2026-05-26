@@ -110,7 +110,7 @@ Reports are designed to record enough context for another reviewer to understand
 - [x] Support threshold calibration by language and task type.
 - [x] Include a public-safe demo corpus for local testing.
 
-## Near-Term Priorities
+## v0.2.0 priorities
 
 - [ ] Improve benchmark documentation with clearer caveats, dataset licenses, and sample size notes.
 - [ ] Add a guided demo flow that can be run from the CLI and the local dashboard.
@@ -137,10 +137,3 @@ Reports are designed to record enough context for another reviewer to understand
 - Vector stores: local in-process vectors by default, with optional ChromaDB and experimental zvec paths.
 - Models: local Sentence Transformers by default, with optional adapters for compatible embedding backends.
 - Jobs: background scan work for longer semantic comparisons.
-
-## Open Questions
-
-- Which audience is the primary public focus: educators, editors, or researchers?
-- Is code-reuse detection part of the main product, or a separate research track?
-- Which multilingual benchmarks are appropriate to include by default after license review?
-- What public expansion, if any, works well for `dux`?

@@ -18,6 +18,15 @@ python -m pip install -e ".[documents]" # PDF and DOCX ingestion
 python -m pip install -e ".[eval]"      # benchmark loaders
 ```
 
+## Proposing changes
+
+1. Fork the repository and branch from `develop`.
+2. Make the smallest change that clearly solves the problem.
+3. Run the local checks below before opening a PR.
+4. Open the PR against `develop` and summarize the user-visible impact, tests, and any privacy considerations.
+
+If you are looking for something useful to tackle, check the roadmap for current priorities before starting a larger change.
+
 ## Privacy Rules
 
 - Keep private documents, corpora, generated reports, model caches, vector indexes, and local databases out of public commits.
@@ -52,3 +61,5 @@ The repository includes:
 - OpenSSF Scorecard
 - Dependabot for GitHub Actions and Python dependency updates
 - CodeRabbit review guidance
+
+Please follow the project's [Code of Conduct](CODE_OF_CONDUCT.md) in issues, reviews, and pull requests.
