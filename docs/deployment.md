@@ -2,6 +2,16 @@
 
 Alcove Dux is local-first by default. The Docker setup runs the API locally with a named SQLite state volume.
 
+## Quick institutional path
+
+For a shared departmental or school server, start here:
+
+```bash
+docker compose up --build
+```
+
+This gives you a local dashboard on `http://localhost:8000` backed by the default local state volume, which is usually the simplest first deployment for an internal-only pilot.
+
 ```bash
 docker compose up --build
 ```

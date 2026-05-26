@@ -32,6 +32,12 @@ An instructor uploads two documents, runs a scan, and gets a side-by-side highli
 
 No command line is required for the main workflow: open the local dashboard in your browser, upload documents, and review the results there.
 
+## 🖥️ Dashboard preview
+
+The local dashboard is the main review surface for most teachers and academic reviewers:
+
+![Alcove Dux dashboard screenshot](docs/assets/dashboard-screenshot.png)
+
 - Local FastAPI dashboard for document upload, scan creation, and side-by-side review.
 - Text, Markdown, PDF, and DOCX ingestion.
 - Exact, fuzzy, semantic, and reranked similarity evidence.
@@ -44,6 +50,16 @@ No command line is required for the main workflow: open the local dashboard in y
 - Instructors comparing assignments against known sources.
 - Department or institution-level academic integrity reviewers.
 - Small schools and colleges that want local control instead of cloud document retention.
+
+## 🏫 Institutional deployment quick path
+
+For a shared departmental or school installation, the fastest path is usually Docker Compose on an inward-facing server:
+
+```bash
+docker compose up --build
+```
+
+Then open `http://localhost:8000` on that machine, or place it behind your institution's normal internal access controls. See [Deployment Notes](docs/deployment.md) for role separation, retention, and hosted-mode guidance.
 
 ## 📚 Documentation
 
