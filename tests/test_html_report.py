@@ -29,6 +29,7 @@ def test_render_report_html_omits_private_text_and_escapes_values():
 
     assert "&lt;scan&gt;" in html
     assert "Exact shared token sequence." in html
+    assert "determine intent" in html
     assert "private" in html
     assert "document text" in html
     assert "Alpha beta gamma" not in html
@@ -80,6 +81,7 @@ def test_render_local_review_html_highlights_snippets():
     )
 
     assert "local-only report includes source text snippets" in html
+    assert "What to do next" in html
     assert '<mark><span class="sr-only">Matched text: </span>Alpha beta gamma</mark>' in html
     assert "Exact shared token sequence." in html
 

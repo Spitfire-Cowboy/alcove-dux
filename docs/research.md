@@ -1,10 +1,11 @@
 # Research Notes
 
 This is the public research basis for Alcove Dux.
+The academic literature often uses the term `plagiarism detection`; Alcove Dux uses that literature to build similarity evidence for human review rather than an automated verdict.
 
 ## Bottom Line
 
-Alcove Dux is scoped as a text-focused, evidence-first plagiarism similarity tool:
+Alcove Dux is scoped as a text-focused, evidence-first similarity review tool:
 
 - local corpus ingestion
 - lexical matching for copy and light edits
@@ -39,7 +40,7 @@ LLM paraphrase is in scope, but `LLM detector` branding is intentionally avoided
 - [Plagiarism Detection in arXiv](https://arxiv.org/abs/cs/0702012) and [Patterns of Text Reuse in a Scientific Corpus](https://arxiv.org/abs/1412.2716): scholarly text reuse baselines.
 - [Wikipedia Text Reuse: Within and Without](https://arxiv.org/abs/1812.09221): large-scale retrieval pipeline and reuse corpus.
 
-## Implement In V1
+## Implement in v1
 
 - PDF/text upload and clean extraction.
 - Source-library indexing from user-provided corpora.
@@ -61,7 +62,7 @@ LLM paraphrase is in scope, but `LLM detector` branding is intentionally avoided
 - Citation, image, math, and formula reuse.
 - LLM-as-judge detection as the default path.
 
-## False Positive Risks
+## Sources of misleading similarity
 
 - Shared templates, assignment prompts, abstracts, methods boilerplate, legal wording, and standard wording.
 - Reference lists, citations, quoted text, theorem statements, captions, and common definitions.

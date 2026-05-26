@@ -34,8 +34,8 @@ def main(argv: list[str] | None = None) -> int:
     subparsers.add_parser("catalog", help="Print the configured model and dataset catalog")
 
     scan_parser = subparsers.add_parser("scan", help="Compare two text files")
-    scan_parser.add_argument("suspicious", type=Path)
-    scan_parser.add_argument("source", type=Path)
+    scan_parser.add_argument("suspicious", type=Path, metavar="SUBMITTED_FILE")
+    scan_parser.add_argument("source", type=Path, metavar="SOURCE_FILE")
     scan_parser.add_argument("--min-score", type=float, default=0.50)
     scan_parser.add_argument("--out", type=Path, help="Write JSON report to this path")
     scan_parser.add_argument("--html", type=Path, help="Write static HTML report to this path")
@@ -47,8 +47,8 @@ def main(argv: list[str] | None = None) -> int:
     _add_runtime_config_arguments(scan_parser)
 
     scan_corpus_parser = subparsers.add_parser("scan-corpus", help="Scan one file against a corpus")
-    scan_corpus_parser.add_argument("suspicious", type=Path)
-    scan_corpus_parser.add_argument("corpus", type=Path)
+    scan_corpus_parser.add_argument("suspicious", type=Path, metavar="SUBMITTED_FILE")
+    scan_corpus_parser.add_argument("corpus", type=Path, metavar="CORPUS_DIR")
     scan_corpus_parser.add_argument("--min-score", type=float, default=0.50)
     scan_corpus_parser.add_argument("--out", type=Path, required=True)
     scan_corpus_parser.add_argument(

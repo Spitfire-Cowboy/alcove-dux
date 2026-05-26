@@ -24,7 +24,7 @@ The integration path starts by making Alcove Dux reports searchable in Alcove. A
 
 ## Boundaries
 
-- Offline by default.
+- Local-first by default.
 - No outbound corpus uploads.
 - No private paths or device names in exported reports.
 - No accusation labels.

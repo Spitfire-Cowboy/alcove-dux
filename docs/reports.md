@@ -17,6 +17,30 @@ Alcove Dux reports are evidence artifacts. They help a reviewer inspect similari
 
 The public schema lives at [`schemas/alcove-dux-report.schema.json`](../schemas/alcove-dux-report.schema.json).
 
+Minimal example:
+
+> **Note**: This example is illustrative and intentionally omits required
+> fields. A complete payload also includes top-level fields such as
+> `schema_version`, `generated_at`, and `source_documents`, plus per-match
+> fields such as `suspicious_start`, `suspicious_end`, `source_start`,
+> `source_end`, chunk IDs, and `explanation`. See
+> [`schemas/alcove-dux-report.schema.json`](../schemas/alcove-dux-report.schema.json)
+> for the full required structure.
+
+```json
+{
+  "scan_id": "scan-123",
+  "suspicious_document_id": "submitted",
+  "source_document_id": "source-a",
+  "matches": [
+    {
+      "kind": "exact_overlap",
+      "score": 0.93
+    }
+  ]
+}
+```
+
 ### Public HTML
 
 The `--html` export is meant for sharing a summary. It avoids raw private matched text and focuses on hashes, IDs, offsets, scores, and evidence metadata.
@@ -24,6 +48,8 @@ The `--html` export is meant for sharing a summary. It avoids raw private matche
 ### Local Review HTML
 
 The `--review-html` export is meant for local review. It includes matched text snippets and highlighted spans.
+
+See the public-safe examples in [`examples/reports/example-scan.html`](../examples/reports/example-scan.html) and [`examples/reports/example-review.html`](../examples/reports/example-review.html).
 
 ## Evidence Labels
 

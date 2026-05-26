@@ -27,7 +27,7 @@ def render_report_html(report: dict[str, Any]) -> str:
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Alcove Dux Scan Report</title>
+  <title>Alcove Dux Text Similarity Report</title>
   <style>
     :root {{
       color-scheme: light;
@@ -91,7 +91,8 @@ def render_report_html(report: dict[str, Any]) -> str:
       line-height: 1.15;
     }}
     h2 {{
-      font-size: 1rem;
+      font-size: 1.15rem;
+      font-weight: 700;
       margin-bottom: 12px;
     }}
     .eyebrow {{
@@ -204,8 +205,8 @@ def render_report_html(report: dict[str, Any]) -> str:
     <p class="eyebrow">Alcove Dux evidence report</p>
     <h1>Scan {escape(str(report.get("scan_id", "unknown")))}</h1>
     <p class="note">
-      This report shows similarity evidence and offsets. It does not include private
-      document text or local file paths.
+      This report shows similarity evidence only. It does not determine intent,
+      policy, or outcome. It also does not include private document text or local file paths.
     </p>
 
     <dl class="summary" aria-label="Scan summary">
@@ -300,14 +301,21 @@ def render_local_review_html(
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Alcove Dux Local Review</title>
+  <title>Alcove Dux Local Similarity Review</title>
   <style>
+    :root {{
+      --ink: #202124;
+      --muted: #5f6368;
+      --line: #dadce0;
+      --panel: #f8fafd;
+      --accent: #0b57d0;
+    }}
     * {{ box-sizing: border-box; }}
     body {{
       margin: 0;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system,
         BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: #202124;
+      color: var(--ink);
       background: #fff;
       line-height: 1.55;
     }}
@@ -317,16 +325,16 @@ def render_local_review_html(
       padding: 32px 0 48px;
     }}
     h1 {{ margin: 0; font-size: 2rem; letter-spacing: 0; }}
-    h2 {{ margin: 0 0 12px; font-size: 1rem; letter-spacing: 0; }}
-    .note {{ max-width: 780px; color: #5f6368; }}
+    h2 {{ margin: 0 0 12px; font-size: 1.15rem; font-weight: 700; letter-spacing: 0; }}
+    .note {{ max-width: 780px; color: var(--muted); }}
     .skip-link {{
       position: absolute;
       left: 12px;
       top: -48px;
       z-index: 10;
       background: #fff;
-      color: #0b57d0;
-      border: 2px solid #0b57d0;
+      color: var(--accent);
+      border: 2px solid var(--accent);
       border-radius: 6px;
       padding: 8px 10px;
     }}
@@ -343,7 +351,7 @@ def render_local_review_html(
       border: 0;
     }}
     section {{
-      border-top: 1px solid #dadce0;
+      border-top: 1px solid var(--line);
       padding-top: 18px;
       margin-top: 24px;
     }}
@@ -353,16 +361,16 @@ def render_local_review_html(
       gap: 14px;
     }}
     .pane {{
-      border: 1px solid #dadce0;
+      border: 1px solid var(--line);
       border-radius: 8px;
       padding: 14px;
       min-height: 160px;
-      background: #f8fafd;
+      background: var(--panel);
       overflow-wrap: anywhere;
       white-space: pre-wrap;
     }}
     .meta {{
-      color: #5f6368;
+      color: var(--muted);
       font-size: 0.86rem;
       margin: 0 0 10px;
     }}
@@ -390,8 +398,13 @@ def render_local_review_html(
   <main id="main-content" tabindex="-1">
     <h1>Local Review</h1>
     <p class="note">
-      This local-only report includes source text snippets for human review. Use the
-      standard HTML export when sharing evidence outside this machine.
+      This report shows similarity evidence only. It does not determine intent,
+      policy, or outcome. This local-only report includes source text snippets for
+      human review. Use the standard HTML export when sharing evidence outside this machine.
+    </p>
+    <p class="note">
+      What to do next: use the highlighted passages as a starting point for human review
+      and conversation, not as a conclusion on their own.
     </p>
     {evidence_rows}
   </main>
