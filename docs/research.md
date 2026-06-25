@@ -86,3 +86,7 @@ LLM paraphrase is in scope, but `LLM detector` branding is intentionally avoided
 - [TEIMMA: The First Content Reuse Annotator for Text, Images, and Math](https://arxiv.org/abs/2305.13193)
 - [Testing of Support Tools for Plagiarism Detection](https://arxiv.org/abs/2002.04279)
 - [Analyzing Non-Textual Content Elements to Detect Academic Plagiarism](https://arxiv.org/abs/2106.05764)
+## Related measurement note
+
+- [AI-use stigma, underreporting, and what it means for Alcove Dux](research-ai-use-stigma.md)
+
