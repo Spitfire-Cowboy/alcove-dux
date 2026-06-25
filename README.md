@@ -19,6 +19,7 @@ Alcove Dux is a review aid, not a verdict machine. It helps teachers and reviewe
 
 ## ⚡ Start Here
 
+- [Live Demo](https://spitfire-cowboy.github.io/alcove-dux/): try a browser-only sample scan.
 - [Quick Start](docs/quickstart.md): install locally and run a sample scan.
 - [Institutional Deployment](docs/deployment.md): run Alcove Dux on a shared departmental or school server.
 - [Demo Walkthrough](docs/demo.md): run the sample demo and inspect the generated report.
@@ -64,6 +65,7 @@ Then open `http://localhost:8000` on that machine, or place it behind your insti
 ## 📚 Documentation
 
 - [Research Notes](docs/research.md) and [Benchmarks](docs/benchmarks.md)
+- [AI-use stigma note](docs/research-ai-use-stigma.md): why self-reported AI use is biased in education and what that changes for Alcove Dux.
 - [Configuration](docs/configuration.md), [Datasets](docs/datasets.md), and [Multilingual Detection](docs/multilingual.md)
 - [Vector Stores](docs/vector-stores.md) and [Alcove Plugin Plan](docs/alcove-plugin.md)
 - [Deployment Notes](docs/deployment.md), [Hosted Hardening](docs/hosted-hardening.md), and [Repository Setup](docs/repository-setup.md)

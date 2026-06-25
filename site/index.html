@@ -1,0 +1,586 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Alcove Dux Demo</title>
+  <style>
+    :root {
+      --ink: #1f2933;
+      --muted: #5d6875;
+      --line: #d8dee8;
+      --surface: #f7f9fc;
+      --surface-strong: #edf4ff;
+      --accent: #0b63ce;
+      --accent-dark: #174ea6;
+      --good: #147d4d;
+      --warn: #9a5b00;
+      --review: #a23636;
+      --focus: #0b63ce;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #ffffff;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    a {
+      color: var(--accent);
+    }
+
+    a:focus-visible,
+    button:focus-visible,
+    textarea:focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 3px;
+    }
+
+    .skip-link {
+      position: absolute;
+      left: 16px;
+      top: -56px;
+      z-index: 20;
+      padding: 8px 12px;
+      border: 2px solid var(--accent);
+      border-radius: 6px;
+      background: #ffffff;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .skip-link:focus {
+      top: 16px;
+    }
+
+    header {
+      border-bottom: 1px solid var(--line);
+      background:
+        linear-gradient(120deg, rgba(11, 99, 206, 0.12), rgba(20, 125, 77, 0.08)),
+        #ffffff;
+    }
+
+    .wrap {
+      width: min(1120px, calc(100vw - 32px));
+      margin: 0 auto;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+      gap: 28px;
+      align-items: center;
+      padding: 48px 0 36px;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--accent-dark);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      letter-spacing: 0;
+      line-height: 1.15;
+    }
+
+    h1 {
+      max-width: 780px;
+      font-size: clamp(2.2rem, 6vw, 4.4rem);
+    }
+
+    h2 {
+      font-size: 1.35rem;
+    }
+
+    h3 {
+      font-size: 1rem;
+    }
+
+    .lede {
+      max-width: 760px;
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .button,
+    button {
+      min-height: 42px;
+      border: 1px solid var(--accent);
+      border-radius: 6px;
+      padding: 9px 14px;
+      background: var(--accent);
+      color: #ffffff;
+      font: inherit;
+      font-weight: 750;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .button.secondary,
+    button.secondary {
+      background: #ffffff;
+      color: var(--accent);
+    }
+
+    .hero-visual {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.78);
+      padding: 18px;
+      box-shadow: 0 18px 44px rgba(31, 41, 51, 0.08);
+    }
+
+    .mini-report {
+      display: grid;
+      gap: 10px;
+    }
+
+    .mini-row {
+      display: grid;
+      grid-template-columns: 92px 1fr 52px;
+      gap: 8px;
+      align-items: center;
+      font-size: 0.9rem;
+    }
+
+    .bar {
+      height: 10px;
+      border-radius: 999px;
+      background: var(--surface-strong);
+      overflow: hidden;
+    }
+
+    .bar span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--accent);
+    }
+
+    main {
+      padding: 28px 0 56px;
+    }
+
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 750;
+    }
+
+    textarea {
+      display: block;
+      width: 100%;
+      min-height: 230px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      color: var(--ink);
+      background: #ffffff;
+      font: 0.95rem/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin: 16px 0 0;
+    }
+
+    .note {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin: 28px 0;
+    }
+
+    .metric {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      background: var(--surface);
+    }
+
+    .metric dt {
+      margin: 0 0 4px;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    .metric dd {
+      margin: 0;
+      font-size: 1.35rem;
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+
+    .evidence {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .evidence-item {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      background: #ffffff;
+    }
+
+    .evidence-head {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      border-radius: 999px;
+      padding: 3px 9px;
+      background: #e6f4ea;
+      color: var(--good);
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    mark {
+      border-radius: 4px;
+      padding: 0 2px;
+      background: #fff2cc;
+      color: inherit;
+    }
+
+    pre {
+      margin: 8px 0 0;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font: 0.92rem/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .details {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .detail {
+      border-top: 3px solid var(--accent);
+      padding-top: 12px;
+    }
+
+    .detail p {
+      margin: 8px 0 0;
+      color: var(--muted);
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 22px 0;
+      color: var(--muted);
+    }
+
+    @media (max-width: 840px) {
+      .hero,
+      .demo-grid,
+      .details {
+        grid-template-columns: 1fr;
+      }
+
+      .summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 520px) {
+      .wrap {
+        width: min(100vw - 20px, 1120px);
+      }
+
+      .hero {
+        padding-top: 36px;
+      }
+
+      .summary {
+        grid-template-columns: 1fr;
+      }
+
+      .mini-row {
+        grid-template-columns: 72px 1fr 44px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#demo">Skip to demo</a>
+  <header>
+    <div class="wrap hero">
+      <div>
+        <p class="eyebrow">Alcove Dux</p>
+        <h1>Review text-reuse evidence in the browser.</h1>
+        <p class="lede">
+          This public demo runs a small lexical scan on sample text and shows the kind of
+          evidence Alcove Dux reports. It is a reviewer aid, not an automated misconduct decision.
+        </p>
+        <div class="links" aria-label="Project links">
+          <a class="button" href="#demo">Try the demo</a>
+          <a class="button secondary" href="https://github.com/Spitfire-Cowboy/alcove-dux">GitHub</a>
+          <a class="button secondary" href="https://github.com/Spitfire-Cowboy/alcove-dux#readme">Docs</a>
+        </div>
+      </div>
+      <div class="hero-visual" aria-label="Example evidence summary">
+        <div class="mini-report">
+          <div class="mini-row"><strong>Exact</strong><div class="bar"><span style="width: 88%"></span></div><span>0.88</span></div>
+          <div class="mini-row"><strong>Fuzzy</strong><div class="bar"><span style="width: 66%"></span></div><span>0.66</span></div>
+          <div class="mini-row"><strong>Review</strong><div class="bar"><span style="width: 42%"></span></div><span>0.42</span></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="wrap" id="demo" aria-labelledby="demo-heading">
+      <p class="eyebrow">Live sample</p>
+      <h2 id="demo-heading">Compare two passages</h2>
+      <p class="note">
+        Edit either passage, then scan again. The demo stays in your browser and does not upload text.
+      </p>
+
+      <div class="demo-grid">
+        <div>
+          <label for="submitted">Submitted passage</label>
+          <textarea id="submitted">A useful plagiarism review tool should show evidence clearly. It should keep private documents local, show matching spans with offsets, and leave final judgment to a human reviewer.</textarea>
+        </div>
+        <div>
+          <label for="source">Source passage</label>
+          <textarea id="source">A plagiarism review system should keep private documents local, show matching spans with offsets, and let a human reviewer make the final judgment from the evidence.</textarea>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button type="button" id="scan">Scan passages</button>
+        <button class="secondary" type="button" id="reset">Reset sample</button>
+        <span class="note" id="status" role="status" aria-live="polite"></span>
+      </div>
+
+      <dl class="summary" aria-label="Similarity summary">
+        <div class="metric"><dt>Token overlap</dt><dd id="overlap">-</dd></div>
+        <div class="metric"><dt>Containment</dt><dd id="containment">-</dd></div>
+        <div class="metric"><dt>Longest match</dt><dd id="longest">-</dd></div>
+        <div class="metric"><dt>Evidence items</dt><dd id="count">-</dd></div>
+      </dl>
+
+      <section aria-labelledby="evidence-heading">
+        <h2 id="evidence-heading">Evidence</h2>
+        <div class="evidence" id="evidence"></div>
+      </section>
+    </section>
+
+    <section class="wrap details" aria-label="Demo notes">
+      <div class="detail">
+        <h3>Local-first</h3>
+        <p>The demo runs in the page. The Python package can run locally for PDF, DOCX, Markdown, and plain text review.</p>
+      </div>
+      <div class="detail">
+        <h3>Evidence-oriented</h3>
+        <p>Reports focus on spans, offsets, scores, and review notes instead of unsupported conclusions.</p>
+      </div>
+      <div class="detail">
+        <h3>Privacy boundary</h3>
+        <p>Public reports avoid local file paths and source text. Local review reports can include more context for private use.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      Alcove Dux is open source under the Apache-2.0 license.
+    </div>
+  </footer>
+
+  <script>
+    const defaults = {
+      submitted: "A useful plagiarism review tool should show evidence clearly. It should keep private documents local, show matching spans with offsets, and leave final judgment to a human reviewer.",
+      source: "A plagiarism review system should keep private documents local, show matching spans with offsets, and let a human reviewer make the final judgment from the evidence."
+    };
+
+    const submitted = document.querySelector("#submitted");
+    const source = document.querySelector("#source");
+    const status = document.querySelector("#status");
+    const evidence = document.querySelector("#evidence");
+
+    function tokenize(text) {
+      const matches = Array.from(text.matchAll(/[\p{L}\p{N}']+/gu));
+      return matches.map((match) => ({
+        value: match[0].toLocaleLowerCase(),
+        start: match.index,
+        end: match.index + match[0].length
+      }));
+    }
+
+    function unique(values) {
+      return new Set(values.map((item) => item.value));
+    }
+
+    function scoreSets(left, right) {
+      if (left.size === 0 || right.size === 0) {
+        return { jaccard: 0, containment: 0 };
+      }
+      const intersection = Array.from(left).filter((value) => right.has(value)).length;
+      const union = new Set([...left, ...right]).size;
+      const smaller = Math.min(left.size, right.size);
+      return {
+        jaccard: intersection / union,
+        containment: intersection / smaller
+      };
+    }
+
+    function findMatches(leftTokens, rightTokens, minTokens = 4) {
+      const matches = [];
+      const usedLeft = [];
+      const usedRight = [];
+
+      for (let leftIndex = 0; leftIndex < leftTokens.length; leftIndex += 1) {
+        for (let rightIndex = 0; rightIndex < rightTokens.length; rightIndex += 1) {
+          let length = 0;
+          while (
+            leftIndex + length < leftTokens.length &&
+            rightIndex + length < rightTokens.length &&
+            leftTokens[leftIndex + length].value === rightTokens[rightIndex + length].value
+          ) {
+            length += 1;
+          }
+
+          if (length >= minTokens) {
+            matches.push({ leftIndex, rightIndex, length });
+          }
+        }
+      }
+
+      return matches
+        .sort((a, b) => b.length - a.length)
+        .filter((match) => {
+          const leftRange = [match.leftIndex, match.leftIndex + match.length];
+          const rightRange = [match.rightIndex, match.rightIndex + match.length];
+          const overlaps = (range, selected) => selected.some(
+            (item) => range[0] < item[1] && item[0] < range[1]
+          );
+          if (overlaps(leftRange, usedLeft) || overlaps(rightRange, usedRight)) {
+            return false;
+          }
+          usedLeft.push(leftRange);
+          usedRight.push(rightRange);
+          return true;
+        });
+    }
+
+    function escapeHtml(value) {
+      return value
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function snippet(text, start, end) {
+      const lead = Math.max(0, start - 48);
+      const trail = Math.min(text.length, end + 48);
+      const before = escapeHtml(text.slice(lead, start));
+      const match = escapeHtml(text.slice(start, end));
+      const after = escapeHtml(text.slice(end, trail));
+      return `${lead > 0 ? "..." : ""}${before}<mark>${match}</mark>${after}${trail < text.length ? "..." : ""}`;
+    }
+
+    function scan() {
+      const leftText = submitted.value;
+      const rightText = source.value;
+      const leftTokens = tokenize(leftText);
+      const rightTokens = tokenize(rightText);
+      const scores = scoreSets(unique(leftTokens), unique(rightTokens));
+      const matches = findMatches(leftTokens, rightTokens);
+      const longest = matches[0]?.length || 0;
+
+      document.querySelector("#overlap").textContent = scores.jaccard.toFixed(2);
+      document.querySelector("#containment").textContent = scores.containment.toFixed(2);
+      document.querySelector("#longest").textContent = `${longest} tokens`;
+      document.querySelector("#count").textContent = String(matches.length);
+      status.textContent = `Scan complete with ${matches.length} evidence item${matches.length === 1 ? "" : "s"}.`;
+
+      if (matches.length === 0) {
+        evidence.innerHTML = "<p class=\"note\">No exact token-sequence evidence found at the demo threshold.</p>";
+        return;
+      }
+
+      evidence.innerHTML = matches.map((match, index) => {
+        const leftStart = leftTokens[match.leftIndex].start;
+        const leftEnd = leftTokens[match.leftIndex + match.length - 1].end;
+        const rightStart = rightTokens[match.rightIndex].start;
+        const rightEnd = rightTokens[match.rightIndex + match.length - 1].end;
+        return `
+          <article class="evidence-item" aria-labelledby="evidence-${index}">
+            <div class="evidence-head">
+              <h3 id="evidence-${index}">Evidence ${index + 1}</h3>
+              <span class="badge">${match.length} matching tokens</span>
+            </div>
+            <p class="note">Submitted offsets ${leftStart}-${leftEnd}; source offsets ${rightStart}-${rightEnd}.</p>
+            <pre aria-label="Submitted evidence snippet">${snippet(leftText, leftStart, leftEnd)}</pre>
+            <pre aria-label="Source evidence snippet">${snippet(rightText, rightStart, rightEnd)}</pre>
+          </article>
+        `;
+      }).join("");
+    }
+
+    document.querySelector("#scan").addEventListener("click", scan);
+    document.querySelector("#reset").addEventListener("click", () => {
+      submitted.value = defaults.submitted;
+      source.value = defaults.source;
+      scan();
+      submitted.focus();
+    });
+
+    scan();
+  </script>
+</body>
+</html>

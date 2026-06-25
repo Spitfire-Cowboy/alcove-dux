@@ -27,6 +27,20 @@ stable release points after package and PyPI setup.
   Security are available for the repository.
 - OpenSSF Scorecard: enabled for `develop` and scheduled runs.
 - Dependabot: configured for GitHub Actions and Python package updates.
+- `uv.lock`: checked in for reproducible workflow and container dependency resolution.
+
+## Scorecard Follow-Up
+
+Some current Scorecard findings require maintainer or repository-governance follow-through rather
+than code-only changes:
+
+- `MaintainedID`: cannot clear until the repository is older than 90 days.
+- `CodeReviewID`: depends on reviewed pull request history accumulating over time.
+- `CIIBestPracticesID`: requires pursuing the OpenSSF Best Practices badge externally.
+- `FuzzingID`: requires adding a real fuzzing target and automation; this is feature work, not a
+  workflow-only fix.
+- `SecurityPolicyID`: keep `SECURITY.md` linked to GitHub private reporting and verify GitHub shows
+  the repository policy at `Security -> Policy`.
 
 ## PyPI
 

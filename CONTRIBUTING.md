@@ -5,27 +5,18 @@ Thanks for helping build Alcove Dux. The project is local-first, evidence-first,
 ## Local Setup
 
 ```bash
-python -m pip install -e ".[dev,api]"
-python -m pytest -q
-python -m ruff check .
+uv sync --locked --extra dev --extra api
+uv run python -m pytest -q
+uv run python -m ruff check .
 ```
 
 Optional extras:
 
 ```bash
-python -m pip install -e ".[semantic]"  # embedding similarity
-python -m pip install -e ".[documents]" # PDF and DOCX ingestion
-python -m pip install -e ".[eval]"      # benchmark loaders
+uv sync --locked --extra semantic   # embedding similarity
+uv sync --locked --extra documents  # PDF and DOCX ingestion
+uv sync --locked --extra eval       # benchmark loaders
 ```
-
-## Proposing changes
-
-1. Fork the repository and branch from `develop`.
-2. Make the smallest change that clearly solves the problem.
-3. Run the local checks below before opening a PR.
-4. Open the PR against `develop` and summarize the user-visible impact, tests, and any privacy considerations.
-
-If you are looking for something useful to tackle, check the roadmap for current priorities before starting a larger change.
 
 ## Privacy Rules
 
@@ -41,10 +32,10 @@ If you are looking for something useful to tackle, check the roadmap for current
 Run these before proposing changes:
 
 ```bash
-python -m pytest -q
-python -m ruff check .
-python -m build
-python -m twine check dist/*
+uv run python -m pytest -q
+uv run python -m ruff check .
+uv run python -m build
+uv run python -m twine check dist/*
 docker compose config >/dev/null
 ```
 
@@ -61,5 +52,4 @@ The repository includes:
 - OpenSSF Scorecard
 - Dependabot for GitHub Actions and Python dependency updates
 - CodeRabbit review guidance
-
-Please follow the project's [Code of Conduct](CODE_OF_CONDUCT.md) in issues, reviews, and pull requests.
+- `uv.lock` for reproducible workflow and container installs
