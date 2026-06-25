@@ -4,15 +4,19 @@ All notable changes to Alcove Dux are documented here.
 
 ## Unreleased
 
+## 0.1.1 - 2026-06-25
+
 ### Added
 
-- Dashboard-first README and quickstart guidance for teachers, reviewers, and institutional deployments.
-- Public-safe documentation updates for privacy, local-first deployment, and report interpretation.
-- GitHub Pages demo and release-process templates for contributors and maintainers.
+- AI-use stigma research note tying self-report bias in educational AI-use surveys to Alcove Dux positioning, review UX, and research methods.
+- README links for the new AI-use stigma note.
 
 ### Changed
 
-- Tightened report wording, evidence framing, and release guidance across docs.
+- Updated GitHub Actions dependencies: `actions/setup-python` 6.3.0, `actions/checkout` 7.0.0, `codecov/codecov-action` 7.0.0, and `astral-sh/setup-uv` 8.2.0.
+- Dashboard-first README and quickstart guidance for teachers, reviewers, and institutional deployments.
+- Public-safe documentation updates for privacy, local-first deployment, report interpretation, and evidence-first review framing.
+- Tightened report wording and release guidance across docs.
 - Updated CodeRabbit configuration to use supported review instructions.
 - Updated the Scorecard workflow to avoid noisy SARIF/code-scanning publication while keeping the security signal.
 
