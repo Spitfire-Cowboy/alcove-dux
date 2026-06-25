@@ -34,6 +34,7 @@ Alcove Dux is a review aid, not an automated misconduct decision system. It help
 ## 📚 Documentation
 
 - [Research Notes](docs/research.md) and [Benchmarks](docs/benchmarks.md)
+- [AI-use stigma note](docs/research-ai-use-stigma.md): why self-reported AI use is biased in education and what that changes for Alcove Dux.
 - [Configuration](docs/configuration.md), [Datasets](docs/datasets.md), and [Multilingual Detection](docs/multilingual.md)
 - [Vector Stores](docs/vector-stores.md) and [Alcove Plugin Plan](docs/alcove-plugin.md)
 - [Deployment Notes](docs/deployment.md), [Hosted Hardening](docs/hosted-hardening.md), and [Repository Setup](docs/repository-setup.md)
