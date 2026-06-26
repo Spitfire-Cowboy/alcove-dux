@@ -78,5 +78,5 @@ def test_chroma_vector_index_reports_missing_optional_dependency(monkeypatch, tm
 
     monkeypatch.setattr(builtins, "__import__", fake_import)
 
-    with pytest.raises(RuntimeError, match="vector-chroma"):
+    with pytest.raises(RuntimeError, match="alcove-dux\\[vector-chroma\\]"):
         ChromaVectorIndex(tmp_path)

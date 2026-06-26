@@ -106,8 +106,9 @@ class ChromaVectorIndex:
             import chromadb
         except ImportError as exc:
             raise RuntimeError(
-                "Chroma vector storage requires: python -m pip install -e "
-                '".[vector-chroma]"'
+                "Chroma vector storage requires the vector-chroma extra. "
+                'Install from source with: python -m pip install -e ".[vector-chroma]". '
+                'Install from a package build with: python -m pip install "alcove-dux[vector-chroma]".'
             ) from exc
         client = chromadb.PersistentClient(path=str(path))
         self.collection = client.get_or_create_collection(

@@ -4,9 +4,13 @@ This path installs Alcove Dux locally and runs a pairwise scan with the bundled 
 
 ## Install
 
+For the full local workflow, including the upload dashboard and PDF/DOCX ingestion:
+
 ```bash
-python -m pip install -e ".[dev,api]"
+python -m pip install -e ".[dev,api,documents]"
 ```
+
+If you only want plain-text CLI scans, `.[dev]` is enough.
 
 Check that the CLI is available:
 
@@ -62,6 +66,12 @@ alcove-dux scan-corpus \
 ```bash
 python -m pip install -e ".[api]"
 uvicorn "alcove_dux.api:create_app" --factory --reload
+```
+
+For PDF/DOCX uploads in the local dashboard, install:
+
+```bash
+python -m pip install -e ".[api,documents]"
 ```
 
 Open `http://localhost:8000` for the local dashboard.

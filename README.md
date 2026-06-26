@@ -14,6 +14,9 @@ Alcove Dux is an open-source, local-first toolkit for reviewing plagiarism and t
 
 Alcove Dux is a review aid, not an automated misconduct decision system. It helps humans inspect similarity evidence without making unsupported accusations.
 
+For the full local dashboard and PDF/DOCX upload path, install the `api` and `documents`
+extras together.
+
 ## ⚡ Start Here
 
 - [Live Demo](https://spitfire-cowboy.github.io/alcove-dux/): try a browser-only sample scan.
@@ -30,6 +33,8 @@ Alcove Dux is a review aid, not an automated misconduct decision system. It help
 - Pairwise scans and local-corpus scans from the CLI.
 - Local FastAPI dashboard for document upload, scan creation, and side-by-side review.
 - Screen-reader-friendly dashboard and HTML reports with privacy-preserving exports.
+
+PDF/DOCX ingestion requires the optional `documents` extra in CLI or API installs.
 
 ## 📚 Documentation
 

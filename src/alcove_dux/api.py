@@ -646,6 +646,9 @@ async def _document_from_upload(file: Any, *, document_id: str | None) -> Docume
 
 def _handle_upload_error(error: RuntimeError | ValueError, *, filename: str | None) -> str:
     logger.exception("Failed to process uploaded document", extra={"upload_name": filename or ""})
+    message = str(error)
+    if "requires the documents extra:" in message:
+        return message
     return GENERIC_UPLOAD_ERROR_MESSAGE
 
 

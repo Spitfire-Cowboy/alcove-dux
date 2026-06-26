@@ -17,3 +17,9 @@ def test_hosted_postgres_healthcheck_uses_env_overrides():
     compose = Path("docker-compose.hosted.yml").read_text(encoding="utf-8")
 
     assert "pg_isready -U ${POSTGRES_USER:-alcove_dux} -d ${POSTGRES_DB:-alcove_dux}" in compose
+
+
+def test_quickstart_uses_full_install_for_dashboard_uploads():
+    quickstart = Path("docs/quickstart.md").read_text(encoding="utf-8")
+
+    assert 'python -m pip install -e ".[dev,api,documents]"' in quickstart
