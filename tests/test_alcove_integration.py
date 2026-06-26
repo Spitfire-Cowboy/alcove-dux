@@ -1,5 +1,7 @@
 import json
-from importlib.metadata import entry_points
+from importlib.metadata import PackageNotFoundError, distribution, entry_points
+from pathlib import Path
+import tomllib
 
 from alcove_dux.integrations.alcove import (
     extract_alcove_dux_report,
@@ -72,10 +74,17 @@ def test_report_to_alcove_document_shape():
 
 
 def test_alcove_entry_point_metadata_exists():
-    group = entry_points().select(group="alcove.extractors")
+    expected_name = "alcove_dux"
+    expected_value = "alcove_dux.integrations.alcove:extract_alcove_dux_report"
 
-    assert any(
-        item.name == "alcove_dux"
-        and item.value == "alcove_dux.integrations.alcove:extract_alcove_dux_report"
-        for item in group
-    )
+    try:
+        distribution("alcove-dux")
+    except PackageNotFoundError:
+        pyproject = Path(__file__).resolve().parent.parent / "pyproject.toml"
+        payload = tomllib.loads(pyproject.read_text(encoding="utf-8"))
+        extractors = payload["project"]["entry-points"]["alcove.extractors"]
+        assert extractors[expected_name] == expected_value
+        return
+
+    group = entry_points().select(group="alcove.extractors")
+    assert any(item.name == expected_name and item.value == expected_value for item in group)
