@@ -34,7 +34,7 @@ dependencies = []
 
 [project.urls]
 Homepage = "https://github.com/Spitfire-Cowboy/alcove-dux"
-Documentation = "https://github.com/Spitfire-Cowboy/alcove-dux/blob/develop/README.md"
+Documentation = "https://github.com/Spitfire-Cowboy/alcove-dux/blob/main/README.md"
 Repository = "https://github.com/Spitfire-Cowboy/alcove-dux"
 Issues = "https://github.com/Spitfire-Cowboy/alcove-dux/issues"
 

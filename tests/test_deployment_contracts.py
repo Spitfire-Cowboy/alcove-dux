@@ -23,6 +23,7 @@ def test_quickstart_uses_full_install_for_dashboard_uploads():
     quickstart = Path("docs/quickstart.md").read_text(encoding="utf-8")
 
     assert 'python -m pip install -e ".[dev,api,documents]"' in quickstart
+    assert 'python -m pip install "alcove-dux[api,documents]"' in quickstart
     assert "That `.[api]` install is enough for pasted text and plain-text uploads." in quickstart
 
 
@@ -39,6 +40,8 @@ def test_ci_smokes_installed_wheel_artifact():
     assert "Smoke install built wheel" in workflow
     assert "python -m pip install dist/*.whl" in workflow
     assert 'python -c "import alcove_dux; print(alcove_dux.__version__)"' in workflow
+    assert "Smoke install built sdist" in workflow
+    assert "python -m pip install dist/*.tar.gz" in workflow
 
 
 def test_release_smokes_installed_wheel_artifact():
@@ -46,3 +49,5 @@ def test_release_smokes_installed_wheel_artifact():
 
     assert "Smoke install built wheel" in workflow
     assert "python -m pip install dist/*.whl" in workflow
+    assert "Smoke install built sdist" in workflow
+    assert "python -m pip install dist/*.tar.gz" in workflow

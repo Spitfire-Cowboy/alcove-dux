@@ -49,6 +49,14 @@ jobs:
           alcove-dux catalog > /tmp/alcove-dux-catalog.json
           python -c "import alcove_dux; print(alcove_dux.__version__)"
 
+      - name: Smoke install built sdist
+        run: |
+          python -m venv .sdist-smoke
+          . .sdist-smoke/bin/activate
+          python -m pip install dist/*.tar.gz
+          alcove-dux catalog > /tmp/alcove-dux-catalog-sdist.json
+          python -c "import alcove_dux; print(alcove_dux.__version__)"
+
       - name: Check distribution metadata
         run: uv run python -m twine check dist/*
 
