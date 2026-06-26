@@ -23,6 +23,8 @@ def test_quickstart_uses_full_install_for_dashboard_uploads():
     quickstart = Path("docs/quickstart.md").read_text(encoding="utf-8")
 
     assert 'python -m pip install -e ".[dev,api,documents]"' in quickstart
+    assert 'python -m pip install "alcove-dux"' in quickstart
+    assert 'python -m pip install "alcove-dux[api]"' in quickstart
     assert 'python -m pip install "alcove-dux[api,documents]"' in quickstart
     assert "That `.[api]` install is enough for pasted text and plain-text uploads." in quickstart
 

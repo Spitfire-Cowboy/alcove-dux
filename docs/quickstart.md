@@ -18,6 +18,12 @@ python -m pip install "alcove-dux[api,documents]"
 
 If you only want plain-text CLI scans, `.[dev]` is enough.
 
+Published-package install for the plain CLI:
+
+```bash
+python -m pip install "alcove-dux"
+```
+
 Check that the CLI is available:
 
 ```bash
@@ -81,6 +87,13 @@ uvicorn "alcove_dux.api:create_app" --factory --reload
 ```
 
 That `.[api]` install is enough for pasted text and plain-text uploads.
+
+Published-package install:
+
+```bash
+python -m pip install "alcove-dux[api]"
+```
+
 For PDF/DOCX uploads in the local dashboard, install:
 
 ```bash
