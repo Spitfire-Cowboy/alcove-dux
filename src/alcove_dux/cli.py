@@ -122,8 +122,12 @@ def main(argv: list[str] | None = None) -> int:
             suspicious_document_sha256=suspicious.sha256,
             source_document_sha256=source.sha256,
             catalog_schema_version=catalog.schema_version,
-            selected_embedding_model_id=runtime_config.embedding_model_id,
-            selected_reranker_model_id=runtime_config.reranker_model_id,
+            selected_embedding_model_id=(
+                runtime_config.embedding_model_id if args.semantic else None
+            ),
+            selected_reranker_model_id=(
+                runtime_config.reranker_model_id if args.rerank else None
+            ),
             runtime_config=runtime_config.to_dict(),
         )
         report_json = report.to_json()
@@ -207,8 +211,12 @@ def main(argv: list[str] | None = None) -> int:
             matches=matches,
             suspicious_document_sha256=result.suspicious_document.sha256,
             catalog_schema_version=catalog.schema_version,
-            selected_embedding_model_id=runtime_config.embedding_model_id,
-            selected_reranker_model_id=runtime_config.reranker_model_id,
+            selected_embedding_model_id=(
+                runtime_config.embedding_model_id if args.semantic else None
+            ),
+            selected_reranker_model_id=(
+                runtime_config.reranker_model_id if args.rerank else None
+            ),
             runtime_config=runtime_config.to_dict(),
         )
         args.out.parent.mkdir(parents=True, exist_ok=True)

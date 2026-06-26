@@ -36,6 +36,8 @@ def test_scan_writes_alcove_dux_report(tmp_path, capsys):
     assert payload["matches"][0]["kind"] == "exact_token_sequence"
     assert len(payload["suspicious_document_sha256"]) == 64
     assert len(payload["source_document_sha256"]) == 64
+    assert payload["selected_embedding_model_id"] is None
+    assert payload["selected_reranker_model_id"] is None
     assert payload["runtime_config"]["embedding_model_id"] == "baai_bge_small_en_v1_5"
     assert "Alcove Dux evidence report" in html_report.read_text(encoding="utf-8")
     assert "<mark>" in review_report.read_text(encoding="utf-8")
@@ -131,6 +133,8 @@ def test_scan_corpus_writes_report(tmp_path):
     assert payload["matches"]
     assert payload["source_document_id"] == "corpus:1"
     assert len(payload["source_documents"]) == 1
+    assert payload["selected_embedding_model_id"] is None
+    assert payload["selected_reranker_model_id"] is None
     assert payload["runtime_config"]["embedding_model_id"] == (
         "sentence_transformers_all_minilm_l6_v2"
     )
