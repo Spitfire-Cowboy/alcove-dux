@@ -20,7 +20,10 @@ It supports:
 
 ## Experimental Backend: zvec
 
-zvec is an embedded optional vector target. Alcove Dux marks it experimental while the Python packaging surface and API stability are validated across supported environments.
+zvec is an embedded optional vector target under evaluation. Alcove Dux does not
+ship a stable runtime adapter for it yet; the current extra is only for dependency
+and packaging experiments while the API surface is validated across supported
+environments.
 
 Install when experimenting:
 
@@ -28,11 +31,11 @@ Install when experimenting:
 python -m pip install -e ".[vector-zvec]"
 ```
 
-It supports:
+Today it supports:
 
-- embedded vector storage
-- local index experiments
-- adapter validation against local corpora
+- dependency install experiments
+- package metadata validation
+- planning for a future embedded adapter
 
 ## Privacy Rule
 

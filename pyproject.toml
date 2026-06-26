@@ -70,7 +70,7 @@ alcove = [
   "alcove-search>=0.4"
 ]
 all = [
-  "alcove-dux[semantic,vector-chroma,documents,yaml,eval,api]"
+  "alcove-dux[semantic,vector-chroma,documents,yaml,eval,api,alcove]"
 ]
 
 [project.scripts]
@@ -89,18 +89,6 @@ packages = ["src/alcove_dux"]
 testpaths = ["tests"]
 pythonpath = ["src"]
 addopts = "--cov=alcove_dux --cov-report=term-missing --cov-report=xml"
-
-[tool.uv]
-conflicts = [
-  [
-    { extra = "alcove" },
-    { extra = "documents" },
-  ],
-  [
-    { extra = "alcove" },
-    { extra = "all" },
-  ],
-]
 
 [tool.ruff]
 line-length = 100
