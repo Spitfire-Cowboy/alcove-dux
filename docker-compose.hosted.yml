@@ -10,7 +10,11 @@ services:
     volumes:
       - alcove_dux-postgres:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U alcove_dux -d alcove_dux"]
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-alcove_dux} -d ${POSTGRES_DB:-alcove_dux}",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5

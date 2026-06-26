@@ -14,7 +14,7 @@ ADD https://astral.sh/uv/install.sh /tmp/uv-installer.sh
 
 RUN chmod +x /tmp/uv-installer.sh \
     && UV_UNMANAGED_INSTALL=/root/.local /tmp/uv-installer.sh \
-    && uv sync --locked --no-dev --extra api \
+    && uv sync --locked --no-dev --extra api --extra documents \
     && rm /tmp/uv-installer.sh
 
 EXPOSE 8000

@@ -33,7 +33,7 @@ jobs:
           enable-cache: true
 
       - name: Sync build environment
-        run: uv sync --locked --extra dev
+        run: uv sync --locked --extra dev --extra api
 
       - name: Check release metadata
         run: uv run python -m pytest tests/test_release_metadata.py -q -o addopts=''
