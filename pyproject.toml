@@ -32,6 +32,12 @@ classifiers = [
 ]
 dependencies = []
 
+[project.urls]
+Homepage = "https://github.com/Spitfire-Cowboy/alcove-dux"
+Documentation = "https://github.com/Spitfire-Cowboy/alcove-dux/blob/develop/README.md"
+Repository = "https://github.com/Spitfire-Cowboy/alcove-dux"
+Issues = "https://github.com/Spitfire-Cowboy/alcove-dux/issues"
+
 [project.optional-dependencies]
 dev = [
   "build>=1.2",

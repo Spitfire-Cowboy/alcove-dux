@@ -20,11 +20,11 @@ extras together.
 ## ⚡ Start Here
 
 - [Live Demo](https://spitfire-cowboy.github.io/alcove-dux/): try a browser-only sample scan.
-- [Quick Start](docs/quickstart.md): install locally and run a sample scan.
-- [Demo Walkthrough](docs/demo.md): run the sample demo and inspect the generated report.
-- [CLI Usage](docs/cli.md): command reference for pairwise scans, corpus scans, semantic matching, and calibration.
-- [Reports](docs/reports.md): JSON, public HTML, local review HTML, and report privacy behavior.
-- [Privacy Boundary](docs/privacy.md): what Alcove Dux does and does not expose.
+- [Quick Start](https://github.com/Spitfire-Cowboy/alcove-dux/blob/develop/docs/quickstart.md): install locally and run a sample scan.
+- [Demo Walkthrough](https://github.com/Spitfire-Cowboy/alcove-dux/blob/develop/docs/demo.md): run the sample demo and inspect the generated report.
+- [CLI Usage](https://github.com/Spitfire-Cowboy/alcove-dux/blob/develop/docs/cli.md): command reference for pairwise scans, corpus scans, semantic matching, and calibration.
+- [Reports](https://github.com/Spitfire-Cowboy/alcove-dux/blob/develop/docs/reports.md): JSON, public HTML, local review HTML, and report privacy behavior.
+- [Privacy Boundary](https://github.com/Spitfire-Cowboy/alcove-dux/blob/develop/docs/privacy.md): what Alcove Dux does and does not expose.
 
 ## 🔎 What It Does
 
@@ -38,12 +38,12 @@ PDF/DOCX ingestion requires the optional `documents` extra in CLI or API install
 
 ## 📚 Documentation
 
-- [Research Notes](docs/research.md) and [Benchmarks](docs/benchmarks.md)
-- [AI-use stigma note](docs/research-ai-use-stigma.md): why self-reported AI use is biased in education and what that changes for Alcove Dux.
-- [Configuration](docs/configuration.md), [Datasets](docs/datasets.md), and [Multilingual Detection](docs/multilingual.md)
-- [Vector Stores](docs/vector-stores.md) and [Alcove Plugin Plan](docs/alcove-plugin.md)
-- [Deployment Notes](docs/deployment.md), [Hosted Hardening](docs/hosted-hardening.md), and [Repository Setup](docs/repository-setup.md)
-- [Roadmap](roadmap.md) and [Demo Video Script](docs/demo-video.md)
+- [Research Notes](https://github.com/Spitfire-Cowboy/alcove-dux/blob/develop/docs/research.md) and [Benchmarks](https://github.com/Spitfire-Cowboy/alcove-dux/blob/develop/docs/benchmarks.md)
+- [AI-use stigma note](https://github.com/Spitfire-Cowboy/alcove-dux/blob/develop/docs/research-ai-use-stigma.md): why self-reported AI use is biased in education and what that changes for Alcove Dux.
+- [Configuration](https://github.com/Spitfire-Cowboy/alcove-dux/blob/develop/docs/configuration.md), [Datasets](https://github.com/Spitfire-Cowboy/alcove-dux/blob/develop/docs/datasets.md), and [Multilingual Detection](https://github.com/Spitfire-Cowboy/alcove-dux/blob/develop/docs/multilingual.md)
+- [Vector Stores](https://github.com/Spitfire-Cowboy/alcove-dux/blob/develop/docs/vector-stores.md) and [Alcove Plugin Plan](https://github.com/Spitfire-Cowboy/alcove-dux/blob/develop/docs/alcove-plugin.md)
+- [Deployment Notes](https://github.com/Spitfire-Cowboy/alcove-dux/blob/develop/docs/deployment.md), [Hosted Hardening](https://github.com/Spitfire-Cowboy/alcove-dux/blob/develop/docs/hosted-hardening.md), and [Repository Setup](https://github.com/Spitfire-Cowboy/alcove-dux/blob/develop/docs/repository-setup.md)
+- [Roadmap](https://github.com/Spitfire-Cowboy/alcove-dux/blob/develop/roadmap.md) and [Demo Video Script](https://github.com/Spitfire-Cowboy/alcove-dux/blob/develop/docs/demo-video.md)
 
 ## 📦 Package
 
@@ -53,4 +53,4 @@ The package name is `alcove-dux`, the import path is `alcove_dux`, and the CLI c
 
 Alcove Dux is maintained as a public open-source project. Contributions are encouraged to keep the local-first privacy boundary intact, include tests for behavioral changes, and keep private corpora, generated reports, model caches, and vector indexes out of public commits.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, checks, and privacy rules.
+See [CONTRIBUTING.md](https://github.com/Spitfire-Cowboy/alcove-dux/blob/develop/CONTRIBUTING.md) for setup, checks, and privacy rules.

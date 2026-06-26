@@ -44,6 +44,12 @@ jobs:
       - name: Check release metadata
         run: uv run python -m pytest tests/test_release_metadata.py -q
 
+      - name: Validate extras resolver contracts
+        if: matrix.python-version == '3.12'
+        run: |
+          uv sync --locked --extra alcove --extra documents
+          uv sync --locked --extra all
+
       - name: Build package
         if: matrix.python-version == '3.12'
         run: uv run python -m build

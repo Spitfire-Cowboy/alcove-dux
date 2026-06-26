@@ -26,3 +26,19 @@ def test_vector_store_docs_mark_zvec_as_not_yet_stable():
     text = (ROOT / "docs/vector-stores.md").read_text(encoding="utf-8")
 
     assert "stable runtime adapter for it yet" in text
+
+
+def test_project_urls_cover_repo_docs_and_issues():
+    urls = _pyproject()["project"]["urls"]
+
+    assert urls["Homepage"] == "https://github.com/Spitfire-Cowboy/alcove-dux"
+    assert urls["Documentation"].endswith("/blob/develop/README.md")
+    assert urls["Issues"].endswith("/issues")
+
+
+def test_readme_uses_absolute_links_for_docs():
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+
+    assert "](docs/" not in readme
+    assert "](roadmap.md)" not in readme
+    assert "https://github.com/Spitfire-Cowboy/alcove-dux/blob/develop/docs/quickstart.md" in readme

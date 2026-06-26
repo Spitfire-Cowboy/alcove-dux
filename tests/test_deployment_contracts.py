@@ -23,3 +23,10 @@ def test_quickstart_uses_full_install_for_dashboard_uploads():
     quickstart = Path("docs/quickstart.md").read_text(encoding="utf-8")
 
     assert 'python -m pip install -e ".[dev,api,documents]"' in quickstart
+
+
+def test_ci_validates_extras_resolver_contracts():
+    workflow = Path(".github/workflows/ci.yml").read_text(encoding="utf-8")
+
+    assert "uv sync --locked --extra alcove --extra documents" in workflow
+    assert "uv sync --locked --extra all" in workflow
