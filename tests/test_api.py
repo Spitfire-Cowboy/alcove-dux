@@ -2,6 +2,7 @@ import pytest
 
 import alcove_dux.api as api_module
 from alcove_dux.api import _dashboard_html, create_app
+from alcove_dux.matching import MatchEvidence
 
 
 def test_create_app_requires_api_extra_when_fastapi_missing():
@@ -230,3 +231,62 @@ def test_dashboard_html_omits_raw_document_text():
     assert '<th scope="row"><code>source</code></th>' in html
     assert '<th scope="row"><a href="/ui/scans/scan"><code>scan</code></a></th>' in html
     assert "raw private text" not in html
+
+
+def test_api_pair_scan_uses_requested_semantic_and_rerank_models(tmp_path, monkeypatch):
+    fastapi_testclient = pytest.importorskip("fastapi.testclient")
+    client = fastapi_testclient.TestClient(create_app(tmp_path / "semantic.sqlite"))
+    seen = {"embedding_model_id": None, "reranker_model_id": None}
+
+    class FakeEmbeddingBackend:
+        def __init__(self, model_id: str) -> None:
+            seen["embedding_model_id"] = model_id
+
+        def embed_texts(self, texts):
+            return [[1.0, 0.0] for _ in texts]
+
+    class FakeRerankerBackend:
+        def __init__(self, model_id: str) -> None:
+            seen["reranker_model_id"] = model_id
+
+        def score_pairs(self, pairs):
+            return [0.91 for _ in pairs]
+
+    def fake_semantic_chunk_matches(*_args, **_kwargs):
+        return [
+            MatchEvidence(
+                kind="possible_paraphrase",
+                suspicious_chunk_id="suspicious:0",
+                source_chunk_id="source:0",
+                score=0.73,
+                suspicious_start=0,
+                suspicious_end=5,
+                source_start=0,
+                source_end=5,
+                explanation="Semantic match.",
+            )
+        ]
+
+    monkeypatch.setattr(api_module, "SentenceTransformerBackend", FakeEmbeddingBackend)
+    monkeypatch.setattr(api_module, "SentenceTransformerRerankerBackend", FakeRerankerBackend)
+    monkeypatch.setattr(api_module, "semantic_chunk_matches", fake_semantic_chunk_matches)
+
+    scan = client.post(
+        "/scans/pair",
+        json={
+            "suspicious_text": "hola mundo",
+            "source_text": "hola mundo",
+            "suspicious_document_id": "suspicious",
+            "source_document_id": "source",
+            "multilingual_embedding_model_id": "intfloat_multilingual_e5_small",
+            "reranker_model_id": "cross_encoder_ms_marco_minilm_l6_v2",
+        },
+    )
+
+    assert scan.status_code == 200
+    payload = scan.json()
+    assert payload["selected_embedding_model_id"] == "intfloat_multilingual_e5_small"
+    assert payload["selected_reranker_model_id"] == "cross_encoder_ms_marco_minilm_l6_v2"
+    assert seen["embedding_model_id"] == "intfloat/multilingual-e5-small"
+    assert seen["reranker_model_id"] == "cross-encoder/ms-marco-MiniLM-L6-v2"
+    assert payload["matches"][0]["score"] == 0.91

@@ -10,9 +10,15 @@ from uuid import uuid4
 from alcove_dux import __version__
 from alcove_dux.catalog import load_catalog
 from alcove_dux.config import RuntimeConfig
-from alcove_dux.documents import Document, load_document_file
+from alcove_dux.documents import Document, chunk_text, load_document_file
 from alcove_dux.matching import compare_texts
 from alcove_dux.reports import ReportDocument, ScanReport
+from alcove_dux.semantic import (
+    SentenceTransformerBackend,
+    SentenceTransformerRerankerBackend,
+    rerank_matches,
+    semantic_chunk_matches,
+)
 from alcove_dux.storage import AlcoveDuxStore
 
 logger = logging.getLogger(__name__)
@@ -49,6 +55,7 @@ def create_app(database_path: str | Path | None = None):
         min_score: float = Field(default=0.50, ge=0, le=1)
         embedding_model_id: str | None = None
         long_context_embedding_model_id: str | None = None
+        multilingual_embedding_model_id: str | None = None
         reranker_model_id: str | None = None
         language: str | None = None
         enabled_dataset_ids: list[str] | None = None
@@ -59,6 +66,7 @@ def create_app(database_path: str | Path | None = None):
         min_score: float = Field(default=0.50, ge=0, le=1)
         embedding_model_id: str | None = None
         long_context_embedding_model_id: str | None = None
+        multilingual_embedding_model_id: str | None = None
         reranker_model_id: str | None = None
         language: str | None = None
         enabled_dataset_ids: list[str] | None = None
@@ -138,6 +146,7 @@ def create_app(database_path: str | Path | None = None):
             min_score=min_score,
             embedding_model_id=None,
             long_context_embedding_model_id=None,
+            multilingual_embedding_model_id=None,
             reranker_model_id=None,
             language=None,
             enabled_dataset_ids=None,
@@ -215,16 +224,20 @@ def create_app(database_path: str | Path | None = None):
             document_id=request.suspicious_document_id,
         )
         source = Document.from_text(request.source_text, document_id=request.source_document_id)
-        report = _build_pair_report(
-            suspicious=suspicious,
-            source=source,
-            min_score=request.min_score,
-            embedding_model_id=request.embedding_model_id,
-            long_context_embedding_model_id=request.long_context_embedding_model_id,
-            reranker_model_id=request.reranker_model_id,
-            language=request.language,
-            enabled_dataset_ids=request.enabled_dataset_ids,
-        )
+        try:
+            report = _build_pair_report(
+                suspicious=suspicious,
+                source=source,
+                min_score=request.min_score,
+                embedding_model_id=request.embedding_model_id,
+                long_context_embedding_model_id=request.long_context_embedding_model_id,
+                multilingual_embedding_model_id=request.multilingual_embedding_model_id,
+                reranker_model_id=request.reranker_model_id,
+                language=request.language,
+                enabled_dataset_ids=request.enabled_dataset_ids,
+            )
+        except RuntimeError as error:
+            raise HTTPException(status_code=400, detail=str(error)) from error
         store.put_scan(report)
         return report.to_dict()
 
@@ -236,16 +249,20 @@ def create_app(database_path: str | Path | None = None):
             raise HTTPException(status_code=404, detail="Submitted document not found")
         if source is None:
             raise HTTPException(status_code=404, detail="Source document not found")
-        report = _build_pair_report(
-            suspicious=Document.from_text(suspicious.text, document_id=suspicious.id),
-            source=Document.from_text(source.text, document_id=source.id),
-            min_score=request.min_score,
-            embedding_model_id=request.embedding_model_id,
-            long_context_embedding_model_id=request.long_context_embedding_model_id,
-            reranker_model_id=request.reranker_model_id,
-            language=request.language,
-            enabled_dataset_ids=request.enabled_dataset_ids,
-        )
+        try:
+            report = _build_pair_report(
+                suspicious=Document.from_text(suspicious.text, document_id=suspicious.id),
+                source=Document.from_text(source.text, document_id=source.id),
+                min_score=request.min_score,
+                embedding_model_id=request.embedding_model_id,
+                long_context_embedding_model_id=request.long_context_embedding_model_id,
+                multilingual_embedding_model_id=request.multilingual_embedding_model_id,
+                reranker_model_id=request.reranker_model_id,
+                language=request.language,
+                enabled_dataset_ids=request.enabled_dataset_ids,
+            )
+        except RuntimeError as error:
+            raise HTTPException(status_code=400, detail=str(error)) from error
         store.put_scan(report)
         return report.to_dict()
 
@@ -277,6 +294,7 @@ def _build_pair_report(
     min_score: float,
     embedding_model_id: str | None,
     long_context_embedding_model_id: str | None,
+    multilingual_embedding_model_id: str | None,
     reranker_model_id: str | None,
     language: str | None,
     enabled_dataset_ids: list[str] | None,
@@ -286,6 +304,7 @@ def _build_pair_report(
         catalog,
         embedding_model_id=embedding_model_id,
         long_context_embedding_model_id=long_context_embedding_model_id,
+        multilingual_embedding_model_id=multilingual_embedding_model_id,
         reranker_model_id=reranker_model_id,
         language=language,
         baseline_lexical_threshold=min_score,
@@ -298,6 +317,25 @@ def _build_pair_report(
         source_id=source.id,
         min_score=min_score,
     )
+    semantic_enabled = any((embedding_model_id, multilingual_embedding_model_id))
+    rerank_enabled = reranker_model_id is not None
+    if semantic_enabled:
+        matches.extend(
+            semantic_chunk_matches(
+                chunk_text(suspicious.text, document_id=suspicious.id),
+                chunk_text(source.text, document_id=source.id),
+                _semantic_backend(catalog, runtime_config),
+                min_score=runtime_config.semantic_similarity_threshold,
+                top_k=runtime_config.semantic_top_k,
+            )
+        )
+    if rerank_enabled:
+        matches = rerank_matches(
+            matches,
+            suspicious_text=suspicious.text,
+            source_texts={source.id: source.text},
+            backend=_reranker_backend(catalog, runtime_config),
+        )
     return ScanReport.create(
         scan_id=str(uuid4()),
         suspicious_document_id=suspicious.id,
@@ -307,10 +345,27 @@ def _build_pair_report(
         suspicious_document_sha256=suspicious.sha256,
         source_document_sha256=source.sha256,
         catalog_schema_version=catalog.schema_version,
-        selected_embedding_model_id=runtime_config.embedding_model_id,
-        selected_reranker_model_id=runtime_config.reranker_model_id,
+        selected_embedding_model_id=runtime_config.embedding_model_id if semantic_enabled else None,
+        selected_reranker_model_id=runtime_config.reranker_model_id if rerank_enabled else None,
         runtime_config=runtime_config.to_dict(),
     )
+
+
+def _semantic_backend(catalog, runtime_config: RuntimeConfig) -> SentenceTransformerBackend:
+    if not runtime_config.embedding_model_id:
+        raise RuntimeError("Semantic scanning requires an embedding model in runtime config")
+    model = catalog.model(runtime_config.embedding_model_id)
+    return SentenceTransformerBackend(model.model_id)
+
+
+def _reranker_backend(
+    catalog,
+    runtime_config: RuntimeConfig,
+) -> SentenceTransformerRerankerBackend:
+    if not runtime_config.reranker_model_id:
+        raise RuntimeError("Reranking requires a reranker model in runtime config")
+    model = catalog.model(runtime_config.reranker_model_id)
+    return SentenceTransformerRerankerBackend(model.model_id)
 
 
 def _dashboard_html(

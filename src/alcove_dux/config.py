@@ -42,7 +42,11 @@ class RuntimeConfig:
     ) -> RuntimeConfig:
         """Resolve runtime config from a catalog and optional overrides."""
 
-        resolved_embedding = embedding_model_id or catalog.model_defaults.get("embedding_model")
+        resolved_embedding = (
+            embedding_model_id
+            or multilingual_embedding_model_id
+            or catalog.model_defaults.get("embedding_model")
+        )
         resolved_long_context = (
             long_context_embedding_model_id
             or catalog.model_defaults.get("long_context_embedding_model")

@@ -56,3 +56,15 @@ def test_runtime_config_rejects_unknown_catalog_ids():
 
     with pytest.raises(KeyError):
         RuntimeConfig.from_catalog(catalog, enabled_dataset_ids=("missing_dataset",))
+
+
+def test_runtime_config_uses_multilingual_override_as_semantic_model_when_requested():
+    catalog = load_catalog()
+
+    config = RuntimeConfig.from_catalog(
+        catalog,
+        multilingual_embedding_model_id="intfloat_multilingual_e5_small",
+    )
+
+    assert config.embedding_model_id == "intfloat_multilingual_e5_small"
+    assert config.multilingual_embedding_model_id == "intfloat_multilingual_e5_small"
