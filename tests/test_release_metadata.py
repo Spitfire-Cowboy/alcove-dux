@@ -1,6 +1,9 @@
 import tomllib
 from pathlib import Path
 
+from alcove_dux import __version__
+from alcove_dux.api import create_app
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -16,3 +19,10 @@ def test_changelog_has_current_version_entry():
     changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
 
     assert f"## {version} -" in changelog
+
+
+def test_runtime_version_matches_release_metadata():
+    version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+
+    assert __version__ == version
+    assert create_app().version == version

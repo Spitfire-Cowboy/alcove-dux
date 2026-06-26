@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
+from alcove_dux import __version__
 from alcove_dux.catalog import load_catalog
 from alcove_dux.config import RuntimeConfig
 from alcove_dux.documents import Document, load_document_file
@@ -62,7 +63,7 @@ def create_app(database_path: str | Path | None = None):
         language: str | None = None
         enabled_dataset_ids: list[str] | None = None
 
-    app = FastAPI(title="Alcove Dux", version="0.1.0")
+    app = FastAPI(title="Alcove Dux", version=__version__)
 
     @app.get("/", response_class=HTMLResponse)
     def dashboard() -> str:
