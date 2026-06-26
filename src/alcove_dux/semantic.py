@@ -26,8 +26,9 @@ class SentenceTransformerBackend:
             from sentence_transformers import SentenceTransformer
         except ImportError as exc:
             raise RuntimeError(
-                "Semantic scanning requires the semantic extra: "
-                'python -m pip install -e ".[semantic]"'
+                "Semantic scanning requires the semantic extra. "
+                'Install from source with: python -m pip install -e ".[semantic]". '
+                'Install from a package build with: python -m pip install "alcove-dux[semantic]".'
             ) from exc
         self.model = SentenceTransformer(model_id)
 
@@ -53,8 +54,9 @@ class SentenceTransformerRerankerBackend:
             from sentence_transformers import CrossEncoder
         except ImportError as exc:
             raise RuntimeError(
-                "Reranking requires the semantic extra: "
-                'python -m pip install -e ".[semantic]"'
+                "Reranking requires the semantic extra. "
+                'Install from source with: python -m pip install -e ".[semantic]". '
+                'Install from a package build with: python -m pip install "alcove-dux[semantic]".'
             ) from exc
         self.model = CrossEncoder(model_id)
 

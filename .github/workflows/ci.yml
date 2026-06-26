@@ -54,6 +54,15 @@ jobs:
         if: matrix.python-version == '3.12'
         run: uv run python -m build
 
+      - name: Smoke install built wheel
+        if: matrix.python-version == '3.12'
+        run: |
+          python -m venv .dist-smoke
+          . .dist-smoke/bin/activate
+          python -m pip install dist/*.whl
+          alcove-dux catalog > /tmp/alcove-dux-catalog.json
+          python -c "import alcove_dux; print(alcove_dux.__version__)"
+
       - name: Check package metadata
         if: matrix.python-version == '3.12'
         run: uv run python -m twine check dist/*

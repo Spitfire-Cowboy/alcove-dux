@@ -2,7 +2,13 @@ import pytest
 
 from alcove_dux.documents import chunk_text
 from alcove_dux.matching import MatchEvidence
-from alcove_dux.semantic import cosine_similarity, rerank_matches, semantic_chunk_matches
+from alcove_dux.semantic import (
+    SentenceTransformerBackend,
+    SentenceTransformerRerankerBackend,
+    cosine_similarity,
+    rerank_matches,
+    semantic_chunk_matches,
+)
 
 
 class FakeBackend:
@@ -73,3 +79,35 @@ def test_rerank_matches_updates_scores():
 
     assert reranked[0].score == 0.91
     assert "Reranker score applied" in reranked[0].explanation
+
+
+def test_sentence_transformer_backend_error_mentions_package_install(monkeypatch):
+    import builtins
+
+    real_import = builtins.__import__
+
+    def fake_import(name, *args, **kwargs):
+        if name == "sentence_transformers":
+            raise ImportError("missing")
+        return real_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "__import__", fake_import)
+
+    with pytest.raises(RuntimeError, match=r'alcove-dux\[semantic\]'):
+        SentenceTransformerBackend("fake-model")
+
+
+def test_reranker_backend_error_mentions_package_install(monkeypatch):
+    import builtins
+
+    real_import = builtins.__import__
+
+    def fake_import(name, *args, **kwargs):
+        if name == "sentence_transformers":
+            raise ImportError("missing")
+        return real_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "__import__", fake_import)
+
+    with pytest.raises(RuntimeError, match=r'alcove-dux\[semantic\]'):
+        SentenceTransformerRerankerBackend("fake-model")

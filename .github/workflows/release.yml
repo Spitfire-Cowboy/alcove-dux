@@ -41,6 +41,14 @@ jobs:
       - name: Build distributions
         run: uv run python -m build
 
+      - name: Smoke install built wheel
+        run: |
+          python -m venv .dist-smoke
+          . .dist-smoke/bin/activate
+          python -m pip install dist/*.whl
+          alcove-dux catalog > /tmp/alcove-dux-catalog.json
+          python -c "import alcove_dux; print(alcove_dux.__version__)"
+
       - name: Check distribution metadata
         run: uv run python -m twine check dist/*
 

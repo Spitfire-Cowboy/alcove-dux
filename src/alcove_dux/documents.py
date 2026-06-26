@@ -164,7 +164,9 @@ def _read_pdf_pages(path: Path) -> list[str]:
         from pypdf import PdfReader
     except ImportError as exc:
         raise RuntimeError(
-            "PDF ingestion requires the documents extra: python -m pip install -e \".[documents]\""
+            "PDF ingestion requires the documents extra. "
+            'Install from source with: python -m pip install -e ".[documents]". '
+            'Install from a package build with: python -m pip install "alcove-dux[documents]".'
         ) from exc
     reader = PdfReader(str(path))
     return [page.extract_text() or "" for page in reader.pages]
@@ -175,7 +177,9 @@ def _read_docx_paragraphs(path: Path) -> list[str]:
         from docx import Document as DocxDocument
     except ImportError as exc:
         raise RuntimeError(
-            "DOCX ingestion requires the documents extra: python -m pip install -e \".[documents]\""
+            "DOCX ingestion requires the documents extra. "
+            'Install from source with: python -m pip install -e ".[documents]". '
+            'Install from a package build with: python -m pip install "alcove-dux[documents]".'
         ) from exc
     document = DocxDocument(str(path))
     return [paragraph.text for paragraph in document.paragraphs]

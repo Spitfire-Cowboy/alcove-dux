@@ -68,6 +68,7 @@ python -m pip install -e ".[api]"
 uvicorn "alcove_dux.api:create_app" --factory --reload
 ```
 
+That `.[api]` install is enough for pasted text and plain-text uploads.
 For PDF/DOCX uploads in the local dashboard, install:
 
 ```bash

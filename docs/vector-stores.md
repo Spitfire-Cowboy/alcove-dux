@@ -12,6 +12,12 @@ Install:
 python -m pip install -e ".[vector-chroma]"
 ```
 
+Published-package install:
+
+```bash
+python -m pip install "alcove-dux[vector-chroma]"
+```
+
 It supports:
 
 - local persistent vector indexes
@@ -29,6 +35,12 @@ Install when experimenting:
 
 ```bash
 python -m pip install -e ".[vector-zvec]"
+```
+
+Published-package install:
+
+```bash
+python -m pip install "alcove-dux[vector-zvec]"
 ```
 
 Today it supports:

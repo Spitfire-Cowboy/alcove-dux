@@ -26,6 +26,8 @@ def test_vector_store_docs_mark_zvec_as_not_yet_stable():
     text = (ROOT / "docs/vector-stores.md").read_text(encoding="utf-8")
 
     assert "stable runtime adapter for it yet" in text
+    assert 'python -m pip install "alcove-dux[vector-chroma]"' in text
+    assert 'python -m pip install "alcove-dux[vector-zvec]"' in text
 
 
 def test_project_urls_cover_repo_docs_and_issues():

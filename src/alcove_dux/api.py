@@ -35,7 +35,9 @@ def create_app(database_path: str | Path | None = None):
         from pydantic import BaseModel, Field
     except ImportError as exc:
         raise RuntimeError(
-            "The API requires the api extra: python -m pip install -e \".[api]\""
+            "The API requires the api extra. "
+            'Install from source with: python -m pip install -e ".[api]". '
+            'Install from a package build with: python -m pip install "alcove-dux[api]".'
         ) from exc
 
     store = AlcoveDuxStore(
@@ -647,7 +649,7 @@ async def _document_from_upload(file: Any, *, document_id: str | None) -> Docume
 def _handle_upload_error(error: RuntimeError | ValueError, *, filename: str | None) -> str:
     logger.exception("Failed to process uploaded document", extra={"upload_name": filename or ""})
     message = str(error)
-    if "requires the documents extra:" in message:
+    if "requires the documents extra" in message:
         return message
     return GENERIC_UPLOAD_ERROR_MESSAGE
 

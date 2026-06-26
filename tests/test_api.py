@@ -12,6 +12,22 @@ def test_create_app_requires_api_extra_when_fastapi_missing():
     assert app.title == "Alcove Dux"
 
 
+def test_create_app_error_mentions_package_install(monkeypatch):
+    import builtins
+
+    real_import = builtins.__import__
+
+    def fake_import(name, *args, **kwargs):
+        if name == "fastapi":
+            raise ImportError("missing")
+        return real_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "__import__", fake_import)
+
+    with pytest.raises(RuntimeError, match=r'alcove-dux\[api\]'):
+        create_app()
+
+
 def test_api_document_and_scan_lifecycle(tmp_path):
     fastapi_testclient = pytest.importorskip("fastapi.testclient")
     client = fastapi_testclient.TestClient(create_app(tmp_path / "api.sqlite"))
@@ -120,7 +136,9 @@ def test_api_file_upload_surfaces_missing_documents_extra(tmp_path, monkeypatch)
 
     async def fail_upload(*_args, **_kwargs):
         raise RuntimeError(
-            'PDF ingestion requires the documents extra: python -m pip install -e ".[documents]"'
+            "PDF ingestion requires the documents extra. "
+            'Install from source with: python -m pip install -e ".[documents]". '
+            'Install from a package build with: python -m pip install "alcove-dux[documents]".'
         )
 
     monkeypatch.setattr(api_module, "_document_from_upload", fail_upload)
@@ -133,6 +151,7 @@ def test_api_file_upload_surfaces_missing_documents_extra(tmp_path, monkeypatch)
 
     assert uploaded.status_code == 400
     assert "requires the documents extra" in uploaded.json()["detail"]
+    assert 'alcove-dux[documents]' in uploaded.json()["detail"]
 
 
 def test_dashboard_routes_do_not_expose_raw_text(tmp_path):
@@ -213,7 +232,9 @@ def test_dashboard_file_upload_surfaces_missing_documents_extra(tmp_path, monkey
 
     async def fail_upload(*_args, **_kwargs):
         raise RuntimeError(
-            'PDF ingestion requires the documents extra: python -m pip install -e ".[documents]"'
+            "PDF ingestion requires the documents extra. "
+            'Install from source with: python -m pip install -e ".[documents]". '
+            'Install from a package build with: python -m pip install "alcove-dux[documents]".'
         )
 
     monkeypatch.setattr(api_module, "_document_from_upload", fail_upload)
@@ -226,6 +247,7 @@ def test_dashboard_file_upload_surfaces_missing_documents_extra(tmp_path, monkey
 
     assert uploaded.status_code == 200
     assert "requires the documents extra" in uploaded.text
+    assert 'alcove-dux[documents]' in uploaded.text
 
 
 def test_dashboard_html_has_screen_reader_landmarks_and_labels():

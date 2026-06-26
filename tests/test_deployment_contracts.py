@@ -23,6 +23,7 @@ def test_quickstart_uses_full_install_for_dashboard_uploads():
     quickstart = Path("docs/quickstart.md").read_text(encoding="utf-8")
 
     assert 'python -m pip install -e ".[dev,api,documents]"' in quickstart
+    assert "That `.[api]` install is enough for pasted text and plain-text uploads." in quickstart
 
 
 def test_ci_validates_extras_resolver_contracts():
@@ -30,3 +31,18 @@ def test_ci_validates_extras_resolver_contracts():
 
     assert "uv sync --locked --extra alcove --extra documents" in workflow
     assert "uv sync --locked --extra all" in workflow
+
+
+def test_ci_smokes_installed_wheel_artifact():
+    workflow = Path(".github/workflows/ci.yml").read_text(encoding="utf-8")
+
+    assert "Smoke install built wheel" in workflow
+    assert "python -m pip install dist/*.whl" in workflow
+    assert 'python -c "import alcove_dux; print(alcove_dux.__version__)"' in workflow
+
+
+def test_release_smokes_installed_wheel_artifact():
+    workflow = Path(".github/workflows/release.yml").read_text(encoding="utf-8")
+
+    assert "Smoke install built wheel" in workflow
+    assert "python -m pip install dist/*.whl" in workflow
