@@ -19,7 +19,7 @@ def _validated_false_positive_rate_cap(value: object) -> float | None:
         return None
     try:
         cap = float(value)
-    except (TypeError, ValueError) as error:
+    except (OverflowError, TypeError, ValueError) as error:
         raise ValueError("false_positive_rate_cap must be finite and between 0 and 1") from error
     if not math.isfinite(cap) or not 0 <= cap <= 1:
         raise ValueError("false_positive_rate_cap must be finite and between 0 and 1")
