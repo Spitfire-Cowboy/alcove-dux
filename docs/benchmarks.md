@@ -42,7 +42,7 @@ python scripts/calibrate_threshold.py --dataset plagbench --limit 1000
 
 ### Policy-cap score calibration
 
-For a detector that emits continuous scores, calibrate against held-out labeled
+For a detector that emits normalized scores from 0 to 1, calibrate against held-out labeled
 examples at the false-positive-rate cap required by the deployment policy. The
 input is a JSON object with parallel `labels` (booleans) and `scores` (numbers)
 arrays. The held-out set must contain at least one positive and one negative:
@@ -69,8 +69,10 @@ python scripts/calibrate_score_threshold.py \
 
 Pass `--threshold` repeatedly to publish results for a fixed threshold grid.
 Without explicit thresholds, the script evaluates each observed score plus a
-conservative threshold above the maximum. The profile records FPR, FNR, and TPR
-at every threshold, the selected threshold, and the policy cap. Calibration
+conservative threshold above the maximum when that threshold remains within the
+0-to-1 scan range. When the maximum score is 1, the grid stops at 1 and strict
+caps may have no qualifying threshold. The profile records FPR, FNR, and TPR at
+every threshold, the selected threshold, and the policy cap. Calibration
 fails if the labels contain no negative examples or none of the supplied
 thresholds satisfies the cap; it does not treat an unmeasurable FPR as zero.
 

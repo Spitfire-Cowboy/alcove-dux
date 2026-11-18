@@ -69,6 +69,22 @@ def test_score_threshold_sweep_validates_inputs():
         score_threshold_sweep([True], [0.9], ())
 
 
+def test_score_threshold_sweep_preserves_unsorted_grid_and_inclusive_ties():
+    expected = [True, False, True, False]
+    scores = [0.8, 0.8, 0.6, 0.2]
+    thresholds = (0.8, 0.3, 0.9)
+
+    sweep = score_threshold_sweep(expected, scores, thresholds)
+
+    assert [result.threshold for result in sweep] == list(thresholds)
+    for result in sweep:
+        direct = binary_classification_metrics(
+            expected,
+            [score >= result.threshold for score in scores],
+        )
+        assert result.metrics == direct
+
+
 def test_mean_absolute_error():
     assert mean_absolute_error([1.0, 0.5, 0.0], [0.8, 0.2, 0.1]) == pytest.approx(0.2)
 

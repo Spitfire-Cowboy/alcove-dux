@@ -100,6 +100,10 @@ def calibrate_score_threshold(
 
     if not 0 <= false_positive_rate_cap <= 1:
         raise ValueError("false_positive_rate_cap must be between 0 and 1")
+    if not all(0 <= score <= 1 for score in scores):
+        raise ValueError("calibration scores must be normalized between 0 and 1")
+    if not all(0 <= threshold <= 1 for threshold in thresholds):
+        raise ValueError("calibration thresholds must be between 0 and 1")
     sweep = score_threshold_sweep(expected, scores, thresholds)
     if not any(not label for label in expected):
         raise ValueError("policy-cap calibration requires at least one negative example")

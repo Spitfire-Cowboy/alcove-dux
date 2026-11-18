@@ -40,9 +40,8 @@ def main() -> int:
         thresholds = tuple(args.threshold)
     elif numeric_scores:
         threshold_values = set(numeric_scores)
-        upper_bound = math.nextafter(max(numeric_scores), math.inf)
-        if math.isfinite(upper_bound):
-            threshold_values.add(upper_bound)
+        upper_bound = min(math.nextafter(max(numeric_scores), math.inf), 1.0)
+        threshold_values.add(upper_bound)
         thresholds = tuple(sorted(threshold_values))
     else:
         thresholds = ()

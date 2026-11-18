@@ -108,6 +108,31 @@ def test_calibrate_score_threshold_uses_conservative_threshold_for_ties():
     assert profile.selected_threshold == 0.85
 
 
+def test_calibrate_score_threshold_supports_one_without_persisting_above_one():
+    profile = calibrate_score_threshold(
+        [True, False],
+        [1.0, 0.1],
+        dataset_id="held-out",
+        detector_id="detector-v2",
+        thresholds=(1.0,),
+        false_positive_rate_cap=0.0,
+    )
+
+    assert profile.selected_threshold == 1.0
+
+
+def test_calibrate_score_threshold_requires_normalized_scores():
+    with pytest.raises(ValueError, match="normalized"):
+        calibrate_score_threshold(
+            [True, False],
+            [1.1, 0.1],
+            dataset_id="held-out",
+            detector_id="detector-v2",
+            thresholds=(0.5,),
+            false_positive_rate_cap=0.0,
+        )
+
+
 def test_calibrate_score_threshold_requires_negative_examples():
     with pytest.raises(ValueError, match="negative example"):
         calibrate_score_threshold(

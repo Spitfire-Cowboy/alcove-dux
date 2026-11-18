@@ -132,6 +132,16 @@ def binary_classification_metrics(
         else:
             tn += 1
 
+    return _classification_metrics_from_counts(tp=tp, fp=fp, tn=tn, fn=fn)
+
+
+def _classification_metrics_from_counts(
+    *,
+    tp: int,
+    fp: int,
+    tn: int,
+    fn: int,
+) -> ClassificationMetrics:
     precision = tp / (tp + fp) if tp + fp else 0.0
     recall = tp / (tp + fn) if tp + fn else 0.0
     f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
@@ -166,16 +176,34 @@ def score_threshold_sweep(
     if not all(math.isfinite(threshold) for threshold in thresholds):
         raise ValueError("thresholds must be finite")
 
-    return tuple(
-        ScoreThresholdMetrics(
+    sorted_examples = sorted(zip(scores, expected, strict=True), reverse=True)
+    indexed_thresholds = sorted(enumerate(thresholds), key=lambda item: item[1], reverse=True)
+    results: dict[int, ScoreThresholdMetrics] = {}
+    true_positives = false_positives = 0
+    example_index = 0
+    positive_count = sum(expected)
+    negative_count = len(expected) - positive_count
+
+    for threshold_index, threshold in indexed_thresholds:
+        while (
+            example_index < len(sorted_examples) and sorted_examples[example_index][0] >= threshold
+        ):
+            if sorted_examples[example_index][1]:
+                true_positives += 1
+            else:
+                false_positives += 1
+            example_index += 1
+        results[threshold_index] = ScoreThresholdMetrics(
             threshold=threshold,
-            metrics=binary_classification_metrics(
-                expected,
-                [score >= threshold for score in scores],
+            metrics=_classification_metrics_from_counts(
+                tp=true_positives,
+                fp=false_positives,
+                tn=negative_count - false_positives,
+                fn=positive_count - true_positives,
             ),
         )
-        for threshold in thresholds
-    )
+
+    return tuple(results[index] for index in range(len(thresholds)))
 
 
 def span_overlap_metrics(truth: list[Span], predicted: list[Span]) -> SpanOverlapMetrics:
