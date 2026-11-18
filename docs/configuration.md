@@ -22,6 +22,10 @@ Threshold calibration is dataset-specific. Cosine similarity is a model score, n
 
 The baseline lexical threshold is `0.50`, chosen from PlagBench and PAN14 calibration sweeps. It is not a policy boundary.
 
+Saved calibration profiles are bound to their `detector_id`. CLI lexical scans
+accept only `baseline_lexical` profiles and reject mismatches before applying a
+saved threshold.
+
 ## Dataset Selection
 
 Dataset loaders can be enabled independently. The evaluation catalog includes:

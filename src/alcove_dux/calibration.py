@@ -11,6 +11,20 @@ from alcove_dux.datasets.pairs import PairExample
 from alcove_dux.evaluation import binary_classification_metrics, score_threshold_sweep
 from alcove_dux.matching import compare_texts
 
+BASELINE_LEXICAL_DETECTOR_ID = "baseline_lexical"
+
+
+def _validated_false_positive_rate_cap(value: object) -> float | None:
+    if value is None:
+        return None
+    try:
+        cap = float(value)
+    except (TypeError, ValueError) as error:
+        raise ValueError("false_positive_rate_cap must be finite and between 0 and 1") from error
+    if not math.isfinite(cap) or not 0 <= cap <= 1:
+        raise ValueError("false_positive_rate_cap must be finite and between 0 and 1")
+    return cap
+
 
 @dataclass(frozen=True)
 class ThresholdScore:
@@ -43,6 +57,9 @@ class CalibrationProfile:
 
         payload = asdict(self)
         payload["scores"] = [score.to_dict() for score in self.scores]
+        payload["false_positive_rate_cap"] = _validated_false_positive_rate_cap(
+            self.false_positive_rate_cap
+        )
         return payload
 
     def to_json(self, *, indent: int = 2) -> str:
@@ -53,20 +70,27 @@ class CalibrationProfile:
     def save(self, path: str | Path) -> None:
         """Save the calibration profile."""
 
+        serialized = self.to_json() + "\n"
         output_path = Path(path)
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        output_path.write_text(self.to_json() + "\n", encoding="utf-8")
+        output_path.write_text(serialized, encoding="utf-8")
+
+    def threshold_for_detector(self, detector_id: str) -> float:
+        """Return the threshold only when the profile matches the active detector."""
+
+        if self.detector_id != detector_id:
+            raise ValueError(
+                f"Calibration profile detector {self.detector_id!r} does not match "
+                f"active detector {detector_id!r}"
+            )
+        return self.selected_threshold
 
     @classmethod
     def load(cls, path: str | Path) -> CalibrationProfile:
         """Load a calibration profile from JSON."""
 
         payload = json.loads(Path(path).read_text(encoding="utf-8"))
-        cap = payload.get("false_positive_rate_cap")
-        if cap is not None:
-            cap = float(cap)
-            if not math.isfinite(cap) or not 0 <= cap <= 1:
-                raise ValueError("false_positive_rate_cap must be finite and between 0 and 1")
+        cap = _validated_false_positive_rate_cap(payload.get("false_positive_rate_cap"))
         return cls(
             dataset_id=str(payload["dataset_id"]),
             detector_id=str(payload["detector_id"]),
@@ -171,7 +195,7 @@ def calibrate_lexical_threshold(
     )
     return CalibrationProfile(
         dataset_id=dataset_id,
-        detector_id="baseline_lexical",
+        detector_id=BASELINE_LEXICAL_DETECTOR_ID,
         selected_threshold=selected.threshold,
         selection_metric=selection_metric,
         scores=scores,

@@ -184,3 +184,35 @@ def test_calibration_profile_rejects_non_finite_json_and_invalid_loaded_cap(tmp_
     )
     with pytest.raises(ValueError, match="finite and between"):
         CalibrationProfile.load(input_path)
+
+
+def test_calibration_profile_invalid_cap_does_not_replace_existing_file(tmp_path):
+    output = tmp_path / "profile.json"
+    output.write_text('{"readable": true}\n', encoding="utf-8")
+    profile = CalibrationProfile(
+        dataset_id="held-out",
+        detector_id="detector-v2",
+        selected_threshold=0.5,
+        selection_metric="true_positive_rate_at_fpr_cap",
+        scores=(),
+        false_positive_rate_cap=1.1,
+    )
+
+    with pytest.raises(ValueError, match="finite and between"):
+        profile.save(output)
+
+    assert output.read_text(encoding="utf-8") == '{"readable": true}\n'
+
+
+def test_calibration_profile_binds_threshold_to_detector():
+    profile = CalibrationProfile(
+        dataset_id="held-out",
+        detector_id="detector-v2",
+        selected_threshold=0.5,
+        selection_metric="f1",
+        scores=(),
+    )
+
+    assert profile.threshold_for_detector("detector-v2") == 0.5
+    with pytest.raises(ValueError, match="does not match active detector 'baseline_lexical'"):
+        profile.threshold_for_detector("baseline_lexical")

@@ -76,6 +76,11 @@ every threshold, the selected threshold, and the policy cap. Calibration
 fails if the labels contain no negative examples or none of the supplied
 thresholds satisfies the cap; it does not treat an unmeasurable FPR as zero.
 
+The `detector_id` is binding provenance, not a display label. The `scan` and
+`scan-corpus` commands use `baseline_lexical` and reject any other profile
+detector ID before applying its threshold. Other detector profiles remain
+publishable artifacts but cannot control lexical scans.
+
 Generated reports are written under `reports/live-fire/` and are intended to stay local unless deliberately summarized for publication.
 
 ## Large peS2o Chroma Stress Runs
