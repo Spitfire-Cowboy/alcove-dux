@@ -4,6 +4,7 @@ from alcove_dux.evaluation import (
     Span,
     binary_classification_metrics,
     mean_absolute_error,
+    score_threshold_sweep,
     span_overlap_metrics,
 )
 
@@ -22,6 +23,33 @@ def test_binary_classification_metrics():
     assert metrics.precision == 0.5
     assert metrics.recall == 0.5
     assert metrics.f1 == 0.5
+    assert metrics.true_positive_rate == 0.5
+    assert metrics.false_positive_rate == 0.5
+    assert metrics.false_negative_rate == 0.5
+
+
+def test_score_threshold_sweep_reports_policy_rates():
+    sweep = score_threshold_sweep(
+        expected=[True, True, False, False],
+        scores=[0.9, 0.6, 0.7, 0.1],
+        thresholds=(0.5, 0.8),
+    )
+
+    assert [result.threshold for result in sweep] == [0.5, 0.8]
+    assert sweep[0].metrics.false_positive_rate == 0.5
+    assert sweep[1].metrics.true_positive_rate == 0.5
+    assert sweep[1].metrics.false_negative_rate == 0.5
+
+
+def test_score_threshold_sweep_validates_inputs():
+    with pytest.raises(ValueError, match="same length"):
+        score_threshold_sweep([True], [], (0.5,))
+
+    with pytest.raises(ValueError, match="must not be empty"):
+        score_threshold_sweep([], [], (0.5,))
+
+    with pytest.raises(ValueError, match="thresholds"):
+        score_threshold_sweep([True], [0.9], ())
 
 
 def test_mean_absolute_error():

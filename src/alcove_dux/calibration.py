@@ -7,7 +7,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 
 from alcove_dux.datasets.pairs import PairExample
-from alcove_dux.evaluation import binary_classification_metrics
+from alcove_dux.evaluation import binary_classification_metrics, score_threshold_sweep
 from alcove_dux.matching import compare_texts
 
 
@@ -35,6 +35,7 @@ class CalibrationProfile:
     scores: tuple[ThresholdScore, ...]
     language: str | None = None
     task_type: str | None = None
+    false_positive_rate_cap: float | None = None
 
     def to_dict(self) -> dict:
         """Serialize to JSON-compatible data."""
@@ -74,7 +75,63 @@ class CalibrationProfile:
             ),
             language=payload.get("language"),
             task_type=payload.get("task_type"),
+            false_positive_rate_cap=(
+                float(payload["false_positive_rate_cap"])
+                if payload.get("false_positive_rate_cap") is not None
+                else None
+            ),
         )
+
+
+def calibrate_score_threshold(
+    expected: list[bool],
+    scores: list[float],
+    *,
+    dataset_id: str,
+    detector_id: str,
+    thresholds: tuple[float, ...],
+    false_positive_rate_cap: float,
+    language: str | None = None,
+    task_type: str | None = None,
+) -> CalibrationProfile:
+    """Select the most sensitive score threshold within an FPR policy cap."""
+
+    if not 0 <= false_positive_rate_cap <= 1:
+        raise ValueError("false_positive_rate_cap must be between 0 and 1")
+    sweep = score_threshold_sweep(expected, scores, thresholds)
+    if not any(not label for label in expected):
+        raise ValueError("policy-cap calibration requires at least one negative example")
+    if not any(expected):
+        raise ValueError("policy-cap calibration requires at least one positive example")
+
+    candidates = tuple(
+        result for result in sweep if result.metrics.false_positive_rate <= false_positive_rate_cap
+    )
+    if not candidates:
+        raise ValueError("no supplied threshold satisfies the false-positive-rate cap")
+
+    selected = max(
+        candidates,
+        key=lambda result: (
+            result.metrics.true_positive_rate,
+            result.metrics.precision,
+            -result.metrics.false_positive_rate,
+            result.threshold,
+        ),
+    )
+    return CalibrationProfile(
+        dataset_id=dataset_id,
+        detector_id=detector_id,
+        selected_threshold=selected.threshold,
+        selection_metric="true_positive_rate_at_fpr_cap",
+        scores=tuple(
+            ThresholdScore(threshold=result.threshold, metrics=result.metrics.to_dict())
+            for result in sweep
+        ),
+        language=language,
+        task_type=task_type,
+        false_positive_rate_cap=false_positive_rate_cap,
+    )
 
 
 def calibrate_lexical_threshold(

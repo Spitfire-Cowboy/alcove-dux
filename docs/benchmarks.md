@@ -40,6 +40,39 @@ Save a calibration profile:
 python scripts/calibrate_threshold.py --dataset plagbench --limit 1000
 ```
 
+### Policy-cap score calibration
+
+For a detector that emits continuous scores, calibrate against held-out labeled
+examples at the false-positive-rate cap required by the deployment policy. The
+input is a JSON object with parallel `labels` (booleans) and `scores` (numbers)
+arrays:
+
+```json
+{
+  "labels": [true, true, false, false],
+  "scores": [0.91, 0.73, 0.42, 0.18]
+}
+```
+
+Select the threshold with the highest true-positive rate that stays within a
+1% false-positive cap:
+
+```bash
+python scripts/calibrate_score_threshold.py \
+  --input reports/held-out-scores.json \
+  --dataset-id held-out-2026-11 \
+  --detector-id detector-v2 \
+  --fpr-cap 0.01 \
+  --out reports/calibration/detector-v2-policy-cap.json
+```
+
+Pass `--threshold` repeatedly to publish results for a fixed threshold grid.
+Without explicit thresholds, the script evaluates each observed score plus a
+conservative threshold above the maximum. The profile records FPR, FNR, and TPR
+at every threshold, the selected threshold, and the policy cap. Calibration
+fails if the labels contain no negative examples or none of the supplied
+thresholds satisfies the cap; it does not treat an unmeasurable FPR as zero.
+
 Generated reports are written under `reports/live-fire/` and are intended to stay local unless deliberately summarized for publication.
 
 ## Large peS2o Chroma Stress Runs

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 from statistics import mean
 
@@ -19,17 +20,51 @@ class ClassificationMetrics:
     tn: int
     fn: int
 
+    @property
+    def true_positive_rate(self) -> float:
+        """Return the share of positive examples detected."""
+
+        return self.tp / (self.tp + self.fn) if self.tp + self.fn else 0.0
+
+    @property
+    def false_positive_rate(self) -> float:
+        """Return the share of negative examples incorrectly detected."""
+
+        return self.fp / (self.fp + self.tn) if self.fp + self.tn else 0.0
+
+    @property
+    def false_negative_rate(self) -> float:
+        """Return the share of positive examples missed."""
+
+        return self.fn / (self.tp + self.fn) if self.tp + self.fn else 0.0
+
     def to_dict(self) -> dict[str, float | int]:
         return {
             "accuracy": round(self.accuracy, 4),
             "precision": round(self.precision, 4),
             "recall": round(self.recall, 4),
             "f1": round(self.f1, 4),
+            "true_positive_rate": round(self.true_positive_rate, 4),
+            "false_positive_rate": round(self.false_positive_rate, 4),
+            "false_negative_rate": round(self.false_negative_rate, 4),
             "tp": self.tp,
             "fp": self.fp,
             "tn": self.tn,
             "fn": self.fn,
         }
+
+
+@dataclass(frozen=True)
+class ScoreThresholdMetrics:
+    """Classification metrics at one continuous-score threshold."""
+
+    threshold: float
+    metrics: ClassificationMetrics
+
+    def to_dict(self) -> dict[str, float | int | dict[str, float | int]]:
+        """Serialize to JSON-compatible data."""
+
+        return {"threshold": self.threshold, "metrics": self.metrics.to_dict()}
 
 
 @dataclass(frozen=True)
@@ -107,6 +142,36 @@ def binary_classification_metrics(
         fp=fp,
         tn=tn,
         fn=fn,
+    )
+
+
+def score_threshold_sweep(
+    expected: list[bool],
+    scores: list[float],
+    thresholds: tuple[float, ...],
+) -> tuple[ScoreThresholdMetrics, ...]:
+    """Evaluate continuous detector scores at supplied thresholds."""
+
+    if len(expected) != len(scores):
+        raise ValueError("expected and scores must have the same length")
+    if not expected:
+        raise ValueError("expected and scores must not be empty")
+    if not thresholds:
+        raise ValueError("thresholds must not be empty")
+    if not all(math.isfinite(score) for score in scores):
+        raise ValueError("scores must be finite")
+    if not all(math.isfinite(threshold) for threshold in thresholds):
+        raise ValueError("thresholds must be finite")
+
+    return tuple(
+        ScoreThresholdMetrics(
+            threshold=threshold,
+            metrics=binary_classification_metrics(
+                expected,
+                [score >= threshold for score in scores],
+            ),
+        )
+        for threshold in thresholds
     )
 
 
