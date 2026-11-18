@@ -210,6 +210,7 @@ source = { editable = "." }
 [package.optional-dependencies]
 alcove = [
     { name = "alcove-search" },
+    { name = "pypdf" },
     { name = "soupsieve" },
 ]
 all = [
@@ -269,6 +270,7 @@ requires-dist = [
     { name = "faiss-cpu", marker = "extra == 'semantic'", specifier = ">=1.8" },
     { name = "fastapi", marker = "extra == 'api'", specifier = ">=0.115" },
     { name = "httpx", marker = "extra == 'api'", specifier = ">=0.27" },
+    { name = "pypdf", marker = "extra == 'alcove'", specifier = ">=6.21.4,<7.0" },
     { name = "pypdf", marker = "extra == 'documents'", specifier = ">=6.21.4,<7.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
     { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=5.0" },

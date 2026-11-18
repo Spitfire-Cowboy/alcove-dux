@@ -68,6 +68,7 @@ api = [
 ]
 alcove = [
   "alcove-search>=0.5",
+  "pypdf>=6.21.4,<7.0",
   "soupsieve>=4.0"
 ]
 all = [
