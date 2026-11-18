@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import math
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
@@ -47,7 +48,7 @@ class CalibrationProfile:
     def to_json(self, *, indent: int = 2) -> str:
         """Serialize as JSON."""
 
-        return json.dumps(self.to_dict(), indent=indent, sort_keys=True)
+        return json.dumps(self.to_dict(), indent=indent, sort_keys=True, allow_nan=False)
 
     def save(self, path: str | Path) -> None:
         """Save the calibration profile."""
@@ -61,6 +62,11 @@ class CalibrationProfile:
         """Load a calibration profile from JSON."""
 
         payload = json.loads(Path(path).read_text(encoding="utf-8"))
+        cap = payload.get("false_positive_rate_cap")
+        if cap is not None:
+            cap = float(cap)
+            if not math.isfinite(cap) or not 0 <= cap <= 1:
+                raise ValueError("false_positive_rate_cap must be finite and between 0 and 1")
         return cls(
             dataset_id=str(payload["dataset_id"]),
             detector_id=str(payload["detector_id"]),
@@ -75,11 +81,7 @@ class CalibrationProfile:
             ),
             language=payload.get("language"),
             task_type=payload.get("task_type"),
-            false_positive_rate_cap=(
-                float(payload["false_positive_rate_cap"])
-                if payload.get("false_positive_rate_cap") is not None
-                else None
-            ),
+            false_positive_rate_cap=cap,
         )
 
 
@@ -125,7 +127,10 @@ def calibrate_score_threshold(
         selected_threshold=selected.threshold,
         selection_metric="true_positive_rate_at_fpr_cap",
         scores=tuple(
-            ThresholdScore(threshold=result.threshold, metrics=result.metrics.to_dict())
+            ThresholdScore(
+                threshold=result.threshold,
+                metrics=result.metrics.to_dict(round_digits=None),
+            )
             for result in sweep
         ),
         language=language,

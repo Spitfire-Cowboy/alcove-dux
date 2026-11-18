@@ -25,6 +25,8 @@ def main() -> int:
     args = parser.parse_args()
 
     payload = json.loads(args.input.read_text(encoding="utf-8"))
+    if not isinstance(payload, dict):
+        raise ValueError("input must be a JSON object")
     labels = payload.get("labels")
     scores = payload.get("scores")
     if not isinstance(labels, list) or not all(isinstance(label, bool) for label in labels):
@@ -37,7 +39,11 @@ def main() -> int:
     if args.threshold:
         thresholds = tuple(args.threshold)
     elif numeric_scores:
-        thresholds = tuple(sorted({*numeric_scores, math.nextafter(max(numeric_scores), math.inf)}))
+        threshold_values = set(numeric_scores)
+        upper_bound = math.nextafter(max(numeric_scores), math.inf)
+        if math.isfinite(upper_bound):
+            threshold_values.add(upper_bound)
+        thresholds = tuple(sorted(threshold_values))
     else:
         thresholds = ()
 

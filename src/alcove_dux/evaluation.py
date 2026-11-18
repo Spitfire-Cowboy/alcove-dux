@@ -38,15 +38,18 @@ class ClassificationMetrics:
 
         return self.fn / (self.tp + self.fn) if self.tp + self.fn else 0.0
 
-    def to_dict(self) -> dict[str, float | int]:
+    def to_dict(self, *, round_digits: int | None = 4) -> dict[str, float | int]:
+        def format_rate(value: float) -> float:
+            return round(value, round_digits) if round_digits is not None else value
+
         return {
-            "accuracy": round(self.accuracy, 4),
-            "precision": round(self.precision, 4),
-            "recall": round(self.recall, 4),
-            "f1": round(self.f1, 4),
-            "true_positive_rate": round(self.true_positive_rate, 4),
-            "false_positive_rate": round(self.false_positive_rate, 4),
-            "false_negative_rate": round(self.false_negative_rate, 4),
+            "accuracy": format_rate(self.accuracy),
+            "precision": format_rate(self.precision),
+            "recall": format_rate(self.recall),
+            "f1": format_rate(self.f1),
+            "true_positive_rate": format_rate(self.true_positive_rate),
+            "false_positive_rate": format_rate(self.false_positive_rate),
+            "false_negative_rate": format_rate(self.false_negative_rate),
             "tp": self.tp,
             "fp": self.fp,
             "tn": self.tn,

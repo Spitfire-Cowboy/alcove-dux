@@ -1,6 +1,7 @@
 import pytest
 
 from alcove_dux.evaluation import (
+    ClassificationMetrics,
     Span,
     binary_classification_metrics,
     mean_absolute_error,
@@ -39,6 +40,22 @@ def test_score_threshold_sweep_reports_policy_rates():
     assert sweep[0].metrics.false_positive_rate == 0.5
     assert sweep[1].metrics.true_positive_rate == 0.5
     assert sweep[1].metrics.false_negative_rate == 0.5
+
+
+def test_classification_metrics_can_preserve_small_policy_rates():
+    metrics = ClassificationMetrics(
+        accuracy=0.0,
+        precision=0.0,
+        recall=0.0,
+        f1=0.0,
+        tp=0,
+        fp=1,
+        tn=99_999,
+        fn=0,
+    )
+
+    assert metrics.to_dict()["false_positive_rate"] == 0.0
+    assert metrics.to_dict(round_digits=None)["false_positive_rate"] == pytest.approx(0.00001)
 
 
 def test_score_threshold_sweep_validates_inputs():

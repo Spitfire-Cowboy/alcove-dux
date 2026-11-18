@@ -45,7 +45,8 @@ python scripts/calibrate_threshold.py --dataset plagbench --limit 1000
 For a detector that emits continuous scores, calibrate against held-out labeled
 examples at the false-positive-rate cap required by the deployment policy. The
 input is a JSON object with parallel `labels` (booleans) and `scores` (numbers)
-arrays:
+arrays. The held-out set must contain at least one positive and one negative:
+a negatives-only set can measure FPR but cannot measure TPR for selection.
 
 ```json
 {
