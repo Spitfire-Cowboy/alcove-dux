@@ -90,6 +90,44 @@ def test_scan_uses_calibration_profile_threshold(tmp_path):
     assert payload["runtime_config"]["baseline_lexical_threshold"] == 0.50
 
 
+def test_scan_rejects_calibration_profile_for_other_detector(tmp_path, capsys):
+    suspicious = tmp_path / "suspicious.txt"
+    source = tmp_path / "source.txt"
+    report = tmp_path / "scan.alcove-dux"
+    profile = tmp_path / "profile.json"
+    suspicious.write_text("Alpha beta gamma delta zeta", encoding="utf-8")
+    source.write_text("Alpha beta gamma delta epsilon", encoding="utf-8")
+    profile.write_text(
+        json.dumps(
+            {
+                "dataset_id": "toy",
+                "detector_id": "detector-v2",
+                "selected_threshold": 0.50,
+                "selection_metric": "f1",
+                "scores": [],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    result = main(
+        [
+            "scan",
+            str(suspicious),
+            str(source),
+            "--calibration-profile",
+            str(profile),
+            "--out",
+            str(report),
+        ]
+    )
+
+    captured = capsys.readouterr()
+    assert result == 1
+    assert "does not match active detector 'baseline_lexical'" in captured.err
+    assert not report.exists()
+
+
 def test_scan_corpus_writes_report(tmp_path):
     corpus = tmp_path / "corpus"
     corpus.mkdir()

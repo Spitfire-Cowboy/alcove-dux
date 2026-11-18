@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 from uuid import uuid4
 
-from alcove_dux.calibration import CalibrationProfile
+from alcove_dux.calibration import BASELINE_LEXICAL_DETECTOR_ID, CalibrationProfile
 from alcove_dux.catalog import load_catalog
 from alcove_dux.config import RuntimeConfig
 from alcove_dux.corpus import load_corpus_documents, scan_text_against_corpus
@@ -77,7 +77,11 @@ def main(argv: list[str] | None = None) -> int:
         except (RuntimeError, ValueError) as error:
             print(str(error), file=sys.stderr)
             return 1
-        min_score = _min_score_from_args(args)
+        try:
+            min_score = _min_score_from_args(args)
+        except ValueError as error:
+            print(str(error), file=sys.stderr)
+            return 1
         matches = compare_texts(
             suspicious.text,
             source.text,
@@ -150,17 +154,22 @@ def main(argv: list[str] | None = None) -> int:
         except (RuntimeError, ValueError) as error:
             print(str(error), file=sys.stderr)
             return 1
+        try:
+            min_score = _min_score_from_args(args)
+        except ValueError as error:
+            print(str(error), file=sys.stderr)
+            return 1
         result = scan_text_against_corpus(
             suspicious.text,
             corpus,
             suspicious_id=suspicious.id,
-            min_score=_min_score_from_args(args),
+            min_score=min_score,
         )
         catalog = load_catalog()
         runtime_config = _runtime_config_from_args(
             args,
             catalog,
-            min_score=_min_score_from_args(args),
+            min_score=min_score,
         )
         matches = list(result.matches)
         if args.semantic:
@@ -345,7 +354,8 @@ def _reranker_backend(catalog, runtime_config: RuntimeConfig) -> SentenceTransfo
 def _min_score_from_args(args: argparse.Namespace) -> float:
     if not args.calibration_profile:
         return args.min_score
-    return CalibrationProfile.load(args.calibration_profile).selected_threshold
+    profile = CalibrationProfile.load(args.calibration_profile)
+    return profile.threshold_for_detector(BASELINE_LEXICAL_DETECTOR_ID)
 
 
 if __name__ == "__main__":

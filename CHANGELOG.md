@@ -4,6 +4,10 @@ All notable changes to Alcove Dux are documented here.
 
 ## Unreleased
 
+### Added
+
+- Continuous-score threshold sweeps and policy-cap calibration with FPR, FNR, and TPR reporting.
+
 ## 0.1.1 - 2026-06-25
 
 ### Added

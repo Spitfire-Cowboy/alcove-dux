@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 from statistics import mean
 
@@ -19,17 +20,54 @@ class ClassificationMetrics:
     tn: int
     fn: int
 
-    def to_dict(self) -> dict[str, float | int]:
+    @property
+    def true_positive_rate(self) -> float:
+        """Return the share of positive examples detected."""
+
+        return self.tp / (self.tp + self.fn) if self.tp + self.fn else 0.0
+
+    @property
+    def false_positive_rate(self) -> float:
+        """Return the share of negative examples incorrectly detected."""
+
+        return self.fp / (self.fp + self.tn) if self.fp + self.tn else 0.0
+
+    @property
+    def false_negative_rate(self) -> float:
+        """Return the share of positive examples missed."""
+
+        return self.fn / (self.tp + self.fn) if self.tp + self.fn else 0.0
+
+    def to_dict(self, *, round_digits: int | None = 4) -> dict[str, float | int]:
+        def format_rate(value: float) -> float:
+            return round(value, round_digits) if round_digits is not None else value
+
         return {
-            "accuracy": round(self.accuracy, 4),
-            "precision": round(self.precision, 4),
-            "recall": round(self.recall, 4),
-            "f1": round(self.f1, 4),
+            "accuracy": format_rate(self.accuracy),
+            "precision": format_rate(self.precision),
+            "recall": format_rate(self.recall),
+            "f1": format_rate(self.f1),
+            "true_positive_rate": format_rate(self.true_positive_rate),
+            "false_positive_rate": format_rate(self.false_positive_rate),
+            "false_negative_rate": format_rate(self.false_negative_rate),
             "tp": self.tp,
             "fp": self.fp,
             "tn": self.tn,
             "fn": self.fn,
         }
+
+
+@dataclass(frozen=True)
+class ScoreThresholdMetrics:
+    """Classification metrics at one continuous-score threshold."""
+
+    threshold: float
+    metrics: ClassificationMetrics
+
+    def to_dict(self) -> dict[str, float | int | dict[str, float | int]]:
+        """Serialize to JSON-compatible data."""
+
+        return {"threshold": self.threshold, "metrics": self.metrics.to_dict()}
 
 
 @dataclass(frozen=True)
@@ -94,6 +132,16 @@ def binary_classification_metrics(
         else:
             tn += 1
 
+    return _classification_metrics_from_counts(tp=tp, fp=fp, tn=tn, fn=fn)
+
+
+def _classification_metrics_from_counts(
+    *,
+    tp: int,
+    fp: int,
+    tn: int,
+    fn: int,
+) -> ClassificationMetrics:
     precision = tp / (tp + fp) if tp + fp else 0.0
     recall = tp / (tp + fn) if tp + fn else 0.0
     f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
@@ -108,6 +156,54 @@ def binary_classification_metrics(
         tn=tn,
         fn=fn,
     )
+
+
+def score_threshold_sweep(
+    expected: list[bool],
+    scores: list[float],
+    thresholds: tuple[float, ...],
+) -> tuple[ScoreThresholdMetrics, ...]:
+    """Evaluate continuous detector scores at supplied thresholds."""
+
+    if len(expected) != len(scores):
+        raise ValueError("expected and scores must have the same length")
+    if not expected:
+        raise ValueError("expected and scores must not be empty")
+    if not thresholds:
+        raise ValueError("thresholds must not be empty")
+    if not all(math.isfinite(score) for score in scores):
+        raise ValueError("scores must be finite")
+    if not all(math.isfinite(threshold) for threshold in thresholds):
+        raise ValueError("thresholds must be finite")
+
+    sorted_examples = sorted(zip(scores, expected, strict=True), reverse=True)
+    indexed_thresholds = sorted(enumerate(thresholds), key=lambda item: item[1], reverse=True)
+    results: dict[int, ScoreThresholdMetrics] = {}
+    true_positives = false_positives = 0
+    example_index = 0
+    positive_count = sum(expected)
+    negative_count = len(expected) - positive_count
+
+    for threshold_index, threshold in indexed_thresholds:
+        while (
+            example_index < len(sorted_examples) and sorted_examples[example_index][0] >= threshold
+        ):
+            if sorted_examples[example_index][1]:
+                true_positives += 1
+            else:
+                false_positives += 1
+            example_index += 1
+        results[threshold_index] = ScoreThresholdMetrics(
+            threshold=threshold,
+            metrics=_classification_metrics_from_counts(
+                tp=true_positives,
+                fp=false_positives,
+                tn=negative_count - false_positives,
+                fn=positive_count - true_positives,
+            ),
+        )
+
+    return tuple(results[index] for index in range(len(thresholds)))
 
 
 def span_overlap_metrics(truth: list[Span], predicted: list[Span]) -> SpanOverlapMetrics:
