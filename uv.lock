@@ -210,10 +210,12 @@ source = { editable = "." }
 [package.optional-dependencies]
 alcove = [
     { name = "alcove-search" },
+    { name = "certifi" },
     { name = "pypdf" },
     { name = "soupsieve" },
 ]
 all = [
+    { name = "certifi" },
     { name = "chromadb" },
     { name = "datasets" },
     { name = "faiss-cpu" },
@@ -227,6 +229,7 @@ all = [
     { name = "uvicorn", extra = ["standard"], marker = "extra != 'extra-10-alcove-dux-alcove' or extra == 'extra-10-alcove-dux-all' or extra == 'extra-10-alcove-dux-documents'" },
 ]
 api = [
+    { name = "certifi" },
     { name = "fastapi" },
     { name = "httpx" },
     { name = "python-multipart" },
@@ -251,6 +254,7 @@ semantic = [
     { name = "sentence-transformers" },
 ]
 vector-chroma = [
+    { name = "certifi" },
     { name = "chromadb" },
 ]
 vector-zvec = [
@@ -265,6 +269,9 @@ requires-dist = [
     { name = "alcove-dux", extras = ["semantic", "vector-chroma", "documents", "yaml", "eval", "api"], marker = "extra == 'all'" },
     { name = "alcove-search", marker = "extra == 'alcove'", specifier = ">=0.5" },
     { name = "build", marker = "extra == 'dev'", specifier = ">=1.2" },
+    { name = "certifi", marker = "extra == 'alcove'", specifier = ">=2026.10.19" },
+    { name = "certifi", marker = "extra == 'api'", specifier = ">=2026.10.19" },
+    { name = "certifi", marker = "extra == 'vector-chroma'", specifier = ">=2026.10.19" },
     { name = "chromadb", marker = "extra == 'vector-chroma'", specifier = ">=0.5" },
     { name = "datasets", marker = "extra == 'eval'", specifier = ">=3.0" },
     { name = "faiss-cpu", marker = "extra == 'semantic'", specifier = ">=1.8" },
